@@ -7,7 +7,7 @@ import { BookOpen, Menu, X, ChevronDown } from 'lucide-react'
 
 const navLinks = [
   { href: '/', label: 'Home' },
-  { href: '/courses', label: 'Courses' },
+  { href: '/courses', label: 'Playbooks' },
   { href: '/policies', label: 'Policy Updates' },
   { href: '/promotions', label: 'Promotions' },
 ]
