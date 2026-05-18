@@ -1,73 +1,59 @@
-import { promotions } from '@/lib/data'
-import { TrendingUp, Calendar, ChevronRight, Zap, Tag } from 'lucide-react'
+import { rewardReels } from '@/lib/data'
+import { Gift, Calendar, ChevronRight, Zap, Play } from 'lucide-react'
 import Link from 'next/link'
 
-export default function PromotionsPage() {
+export default function OffersPage() {
   return (
     <div>
-      {/* Header */}
       <div className="hero-bg">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-9 h-9 rounded-xl bg-red/20 border border-red/30 flex items-center justify-center">
-              <Tag size={18} className="text-red" />
-            </div>
-            <div>
-              <p className="text-red text-xs font-semibold uppercase tracking-wider">Offers</p>
-              <h1 className="font-display text-3xl font-bold text-white">Promotions</h1>
-            </div>
-          </div>
-          <p className="text-white/55 mt-2">Limited-time deals and course bundles for BFSI teams</p>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+          <Gift size={20} className="text-red mb-2" />
+          <h1 className="font-display text-3xl font-bold text-white mb-1">Offers & Rewards</h1>
+          <p className="text-white/50 text-sm">Discounts, cashback, and benefits on health insurance plans</p>
         </div>
       </div>
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        {/* Featured promo */}
-        <div className="relative rounded-2xl overflow-hidden hero-bg border border-white/5 mb-10">
+        {/* Featured */}
+        <div className="relative rounded-2xl overflow-hidden hero-bg mb-10 border border-white/5">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,rgba(227,24,55,0.2),transparent_60%)]" />
-          <div className="relative flex flex-col md:flex-row items-center justify-between gap-8 px-8 py-10">
+          <div className="relative flex flex-col md:flex-row items-center justify-between gap-6 px-7 py-9">
             <div>
-              <div className="inline-flex items-center gap-2 bg-red/20 border border-red/30 rounded-full px-3 py-1 mb-4">
-                <Zap size={13} className="text-red" />
-                <span className="text-xs text-red font-semibold uppercase tracking-wide">Featured Deal</span>
+              <div className="inline-flex items-center gap-2 bg-red/15 border border-red/25 rounded-full px-3 py-1 mb-3">
+                <Zap size={12} className="text-red" />
+                <span className="text-xs text-red font-bold uppercase tracking-wide">Featured Offer</span>
               </div>
-              <h2 className="font-display text-3xl font-bold text-white mb-2">{promotions[0].title}</h2>
-              <p className="text-white/55 max-w-lg leading-relaxed">{promotions[0].description}</p>
-              <div className="flex items-center gap-2 mt-4 text-sm text-white/40">
-                <Calendar size={13} /> Expires: <span className="text-white/70">{promotions[0].expiresAt}</span>
-              </div>
+              <h2 className="font-display text-2xl font-bold text-white mb-2">{rewardReels[0].title}</h2>
+              <p className="text-white/50 text-sm">{rewardReels[0].subtitle}</p>
             </div>
             <div className="flex-shrink-0">
-              <Link href="/courses" className="btn-red px-8 py-3.5 text-base inline-flex items-center gap-2 whitespace-nowrap">
-                {promotions[0].cta} <ChevronRight size={18} />
-              </Link>
+              <button className="btn-red px-7 py-3 text-sm inline-flex items-center gap-2">Claim Offer <ChevronRight size={16} /></button>
             </div>
           </div>
         </div>
 
-        {/* All offers */}
-        <h2 className="font-display text-2xl font-bold text-navy mb-6 section-title">All Offers</h2>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {promotions.map(promo => (
-            <div key={promo.id} className="card p-6 flex flex-col">
-              <span className="badge bg-red/10 text-red w-fit mb-4">{promo.badge}</span>
-              <h3 className="font-display text-xl font-bold text-navy mb-1">{promo.title}</h3>
-              <p className="text-red text-sm font-semibold mb-3">{promo.subtitle}</p>
-              <p className="text-gray-600 text-sm leading-relaxed flex-1 mb-5">{promo.description}</p>
-              <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                <div className="flex items-center gap-1.5 text-xs text-gray-400">
-                  <Calendar size={11} /> Expires {promo.expiresAt}
+        <h2 className="font-display text-xl font-bold text-navy mb-5">All Offers & Benefits</h2>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          {rewardReels.map(r => (
+            <div key={r.id} className="card overflow-hidden group cursor-pointer">
+              <div className="relative h-40 overflow-hidden">
+                <img src={r.thumbnail} alt={r.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="w-10 h-10 rounded-full bg-red flex items-center justify-center"><Play size={15} className="text-white ml-0.5" /></div>
                 </div>
-                <Link href="/courses" className="text-red text-sm font-semibold hover:text-red-dark flex items-center gap-1 transition-colors">
-                  {promo.cta} <ChevronRight size={13} />
-                </Link>
+                <span className={`absolute top-2 left-2 badge ${r.tagColor} text-[9px]`}>{r.tag}</span>
+                <span className="absolute bottom-2 right-2 bg-black/60 rounded text-[10px] text-white px-1.5 py-0.5">{r.duration}</span>
+              </div>
+              <div className="p-4">
+                <h3 className="font-semibold text-navy text-sm leading-snug group-hover:text-red transition-colors mb-1 line-clamp-2">{r.title}</h3>
+                <p className="text-xs text-gray-400">{r.subtitle}</p>
+                <button className="mt-3 text-red text-xs font-semibold flex items-center gap-1 hover:gap-2 transition-all">View Details <ChevronRight size={12} /></button>
               </div>
             </div>
           ))}
         </div>
-
-        <div className="mt-10 p-4 rounded-xl bg-gray-100 border border-gray-200 text-center">
-          <p className="text-sm text-gray-500">All promotions are subject to availability and terms. Contact your account manager for corporate pricing.</p>
+        <div className="mt-8 p-4 rounded-xl bg-gray-100 border border-gray-200 text-center">
+          <p className="text-sm text-gray-500">All offers subject to terms and conditions. Contact your advisor for eligibility details.</p>
         </div>
       </div>
     </div>
