@@ -2,7 +2,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { BookOpen, Menu, X, Play } from 'lucide-react'
+import { Play, Menu, X } from 'lucide-react'
 
 const navLinks = [
   { href: '/', label: 'Home' },
@@ -27,6 +27,7 @@ export default function Navbar() {
               <span className="block font-bold text-red text-sm tracking-tight -mt-0.5">Video Hub</span>
             </div>
           </Link>
+
           <nav className="hidden md:flex items-center gap-1">
             {navLinks.map(link => (
               <Link key={link.href} href={link.href}
@@ -35,16 +36,13 @@ export default function Navbar() {
               </Link>
             ))}
           </nav>
-          <div className="hidden md:flex items-center gap-3">
-            <Link href="/courses" className="btn-red px-5 py-2 text-sm inline-flex items-center gap-1.5">
-              <Play size={13} /> Watch Videos
-            </Link>
-          </div>
+
           <button className="md:hidden text-gray-600 hover:text-navy" onClick={() => setOpen(!open)}>
             {open ? <X size={22} /> : <Menu size={22} />}
           </button>
         </div>
       </div>
+
       {open && (
         <div className="md:hidden bg-white border-t border-gray-100 px-4 py-3 space-y-1">
           {navLinks.map(link => (
@@ -53,9 +51,6 @@ export default function Navbar() {
               {link.label}
             </Link>
           ))}
-          <Link href="/courses" onClick={() => setOpen(false)} className="block mt-2 btn-red px-4 py-2.5 text-sm text-center">
-            <Play size={13} className="inline mr-1.5" /> Watch Videos
-          </Link>
         </div>
       )}
     </header>
