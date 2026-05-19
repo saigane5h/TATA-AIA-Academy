@@ -8,7 +8,7 @@ const navLinks = [
   { href: '/', label: 'Home' },
   { href: '/courses', label: 'Video Guides' },
   { href: '/policies', label: 'Policy Updates' },
-  // { href: '/promotions', label: 'Offers & Rewards' },
+  { href: '/promotions', label: 'Offers & Rewards' },
 ]
 
 export default function Navbar() {

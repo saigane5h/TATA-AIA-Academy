@@ -2,6 +2,9 @@
   "name": "insurance-learning-hub",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -12,7 +15,7 @@
     "next": "15.3.9",
     "react": "^19",
     "react-dom": "^19",
-    "lucide-react": "^0.383.0"
+    "lucide-react": "^0.513.0"
   },
   "devDependencies": {
     "@types/node": "^20",

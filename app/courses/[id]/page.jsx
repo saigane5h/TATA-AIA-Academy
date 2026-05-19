@@ -2,7 +2,7 @@
 import { useParams } from 'next/navigation'
 import { videoSeries, featuredVideos } from '@/lib/data'
 import Link from 'next/link'
-import { ArrowLeft, Play, Clock, ChevronRight, Code2 } from 'lucide-react'
+import { ArrowLeft, Play, Clock, ChevronRight } from 'lucide-react'
 import { useState } from 'react'
 
 function VideoPlayer({ video }) {
@@ -12,7 +12,8 @@ function VideoPlayer({ video }) {
     </div>
   )
   if (video.embedCode) return (
-    <div className="rounded-2xl overflow-hidden border border-gray-200 bg-black video-wrapper" dangerouslySetInnerHTML={{ __html: video.embedCode }} />
+    <div className="rounded-2xl overflow-hidden border border-gray-200 bg-black video-wrapper"
+      dangerouslySetInnerHTML={{ __html: video.embedCode }} />
   )
   return (
     <div className="rounded-2xl border-2 border-dashed border-red/25 bg-red/2 aspect-video flex flex-col items-center justify-center gap-3">
@@ -20,10 +21,7 @@ function VideoPlayer({ video }) {
         <Play size={28} className="text-red/50" />
       </div>
       <h3 className="font-semibold text-navy text-base px-6 text-center">{video.title}</h3>
-      <p className="text-gray-400 text-sm text-center max-w-xs">Add your <code className="text-red bg-red/10 px-1 rounded text-xs">embedCode</code> in <code className="text-red bg-red/10 px-1 rounded text-xs">lib/data.js</code></p>
-      <div className="inline-flex items-center gap-2 bg-gray-100 border border-gray-200 rounded-lg px-3 py-2 text-xs text-gray-500 font-mono mt-1">
-        <Code2 size={11} className="text-red" /> embedCode: '&lt;iframe src="..." /&gt;'
-      </div>
+      <p className="text-gray-400 text-sm text-center max-w-xs">Video coming soon</p>
     </div>
   )
 }
