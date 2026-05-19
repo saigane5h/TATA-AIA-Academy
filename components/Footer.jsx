@@ -33,7 +33,7 @@ export default function Footer() {
           <div>
             <h4 className="font-semibold text-white text-sm mb-4 uppercase tracking-wider">Platform</h4>
             <ul className="space-y-2.5">
-              {[['Video Guides', '/courses'], ['Policy Updates', '/policies'], ['Offers & Rewards', '/promotions']].map(([label, href]) => (
+              {[['Video Guides', '/courses'], ['Policy Updates', '/policies'], '/promotions']].map(([label, href]) => (
                 <li key={label}><Link href={href} className="text-white/50 text-sm hover:text-red transition-colors">{label}</Link></li>
               ))}
             </ul>
