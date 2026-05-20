@@ -5,17 +5,13 @@ import Link from 'next/link'
 import { featuredVideos, policyVideos, videoSeries } from '@/lib/data'
 import { Play, ArrowRight, Shield, BadgeCheck, Share2, ChevronRight, Clock, Calendar, TrendingUp, Calculator } from 'lucide-react'
 
-// ── Filterable Video Card ─────────────────────────────────────
 function VideoCard({ video }) {
   return (
     <div className="group cursor-pointer">
       <div className="relative rounded-xl overflow-hidden aspect-video mb-3 bg-gray-100">
-        <img
-          src={video.thumbnail}
-          alt={video.title}
+        <img src={video.thumbnail} alt={video.title}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-          onError={e => { e.target.style.display='none'; e.target.nextSibling.style.display='flex' }}
-        />
+          onError={e => { e.target.style.display='none'; e.target.nextSibling.style.display='flex' }} />
         <div className="hidden w-full h-full bg-gradient-to-br from-navy-700 to-navy items-center justify-center absolute inset-0" />
         <div className="absolute inset-0 bg-black/25 group-hover:bg-black/10 transition-colors" />
         <div className="absolute inset-0 flex items-center justify-center">
@@ -34,7 +30,6 @@ function VideoCard({ video }) {
   )
 }
 
-// ── Guide Tile ────────────────────────────────────────────────
 function GuideTile({ g }) {
   return (
     <Link href="/courses" className="block group">
@@ -56,7 +51,6 @@ function GuideTile({ g }) {
   )
 }
 
-// ── Policy Row ────────────────────────────────────────────────
 function PolicyRow({ pv }) {
   return (
     <Link href="/policies" className="block group">
@@ -85,7 +79,6 @@ function PolicyRow({ pv }) {
   )
 }
 
-// ── Tag Filter Button ─────────────────────────────────────────
 function TagBtn({ label, active, onClick }) {
   return (
     <button onClick={onClick}
@@ -98,30 +91,22 @@ function TagBtn({ label, active, onClick }) {
 }
 
 export default function HomePage() {
-  // Section 02 filter state
   const essentialsTags = ['All', 'Basics', 'Planning', 'Claims', 'Critical illness', 'Benefits', 'Must know', 'Tax & cover', 'Myth busted']
   const [essentialsTag, setEssentialsTag] = useState('All')
-
-  // Section 08 filter state
   const mythTags = ['All', 'Myth busted', 'FAQ']
   const [mythTag, setMythTag] = useState('All')
 
   const essentialsVideos = featuredVideos.filter(v =>
-    essentialsTag === 'All'
-      ? !['Myth busted', 'FAQ'].includes(v.tag)
-      : v.tag === essentialsTag
+    essentialsTag === 'All' ? !['Myth busted', 'FAQ'].includes(v.tag) : v.tag === essentialsTag
   )
-
   const mythVideos = featuredVideos.filter(v =>
-    mythTag === 'All'
-      ? ['Myth busted', 'FAQ'].includes(v.tag)
-      : v.tag === mythTag
+    mythTag === 'All' ? ['Myth busted', 'FAQ'].includes(v.tag) : v.tag === mythTag
   )
 
   return (
     <div className="bg-gray-50">
 
-      {/* ── SECTION 01: HERO ──────────────────────────────────── */}
+      {/* HERO */}
       <section className="hero-bg relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_75%_50%,rgba(227,24,55,0.1),transparent_60%)]" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-0">
@@ -197,18 +182,19 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Ticker */}
+        {/* Ticker — clickable */}
         <div className="border-t border-white/8 bg-white/5">
-          {['Term Insurance', 'ULIP', 'Whole Life', 'Critical Illness', 'Claim Settlement', 'Tax Benefits', 'Riders', 'Endowment'].map((t, i) => (
-  <Link key={i} href="/courses" className="text-[11px] text-white/25 uppercase tracking-widest flex items-center gap-2 whitespace-nowrap hover:text-red transition-colors cursor-pointer">
-    <span className="text-red text-[7px]">◆</span>{t}
-  </Link>
-))}
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex flex-wrap gap-x-8 gap-y-1 overflow-hidden">
+            {['Term Insurance', 'ULIP', 'Whole Life', 'Critical Illness', 'Claim Settlement', 'Tax Benefits', 'Riders', 'Endowment'].map((t, i) => (
+              <Link key={i} href="/courses" className="text-[11px] text-white/25 uppercase tracking-widest flex items-center gap-2 whitespace-nowrap hover:text-red transition-colors cursor-pointer">
+                <span className="text-red text-[7px]">◆</span>{t}
+              </Link>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* ── SECTION 02: START HERE — with filter ─────────────── */}
+      {/* SECTION 02 — Start Here with filter */}
       <section className="py-12 bg-white border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-end justify-between mb-2">
@@ -217,19 +203,11 @@ export default function HomePage() {
               <h2 className="font-display text-2xl font-bold text-navy">The essentials, explained simply</h2>
               <p className="text-gray-400 text-sm mt-1 max-w-xl">The most important things to know about life insurance — curated, not algorithmic.</p>
             </div>
-            <Link href="/courses" className="hidden sm:flex items-center gap-1 text-red text-sm font-semibold hover:gap-2 transition-all whitespace-nowrap">
-              All videos <ArrowRight size={13} />
-            </Link>
+            <Link href="/courses" className="hidden sm:flex items-center gap-1 text-red text-sm font-semibold hover:gap-2 transition-all whitespace-nowrap">All videos <ArrowRight size={13} /></Link>
           </div>
-
-          {/* Filterable tags */}
           <div className="flex flex-wrap gap-2 my-5">
-            {essentialsTags.map(tag => (
-              <TagBtn key={tag} label={tag} active={essentialsTag === tag} onClick={() => setEssentialsTag(tag)} />
-            ))}
+            {essentialsTags.map(tag => <TagBtn key={tag} label={tag} active={essentialsTag === tag} onClick={() => setEssentialsTag(tag)} />)}
           </div>
-
-          {/* Filtered video grid */}
           {essentialsVideos.length > 0 ? (
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
               {essentialsVideos.slice(0, 4).map(v => <VideoCard key={v.id} video={v} />)}
@@ -240,7 +218,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── SECTION 03: TRENDING ──────────────────────────────── */}
+      {/* SECTION 03 — Trending */}
       <section className="py-12 bg-gray-50 border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-end justify-between mb-6">
@@ -249,9 +227,7 @@ export default function HomePage() {
               <h2 className="font-display text-2xl font-bold text-navy">Trending this week</h2>
               <p className="text-gray-400 text-sm mt-1">The life insurance questions Indians are searching for right now — answered.</p>
             </div>
-            <Link href="/courses" className="hidden sm:flex items-center gap-1 text-red text-sm font-semibold hover:gap-2 transition-all whitespace-nowrap">
-              See all trending <ArrowRight size={13} />
-            </Link>
+            <Link href="/courses" className="hidden sm:flex items-center gap-1 text-red text-sm font-semibold hover:gap-2 transition-all whitespace-nowrap">See all trending <ArrowRight size={13} /></Link>
           </div>
           <div className="flex flex-wrap gap-3">
             {['GST exemption on insurance', 'Term vs ULIP', 'Claim rejection reasons', 'Protection gap calculator', 'Insurance for self-employed', 'Single woman & life cover'].map((t, i) => (
@@ -264,7 +240,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── SECTION 04: FOR YOUR SITUATION ───────────────────── */}
+      {/* SECTION 04 — For Your Situation */}
       <section className="py-12 bg-white border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-8">
@@ -293,7 +269,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── SECTION 05: TOPIC GUIDES ──────────────────────────── */}
+      {/* SECTION 05 — Topic Guides */}
       <section className="py-12 bg-gray-50 border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-end justify-between mb-6">
@@ -302,9 +278,7 @@ export default function HomePage() {
               <h2 className="font-display text-2xl font-bold text-navy">Everything on one topic, in one place</h2>
               <p className="text-gray-400 text-sm mt-1">From buying basics to claim settlements — every topic covered in full.</p>
             </div>
-            <Link href="/courses" className="hidden sm:flex items-center gap-1 text-red text-sm font-semibold hover:gap-2 transition-all whitespace-nowrap">
-              Browse all guides <ArrowRight size={13} />
-            </Link>
+            <Link href="/courses" className="hidden sm:flex items-center gap-1 text-red text-sm font-semibold hover:gap-2 transition-all whitespace-nowrap">Browse all guides <ArrowRight size={13} /></Link>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
             {[
@@ -321,7 +295,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── SECTION 06: KNOW YOUR NUMBERS ────────────────────── */}
+      {/* SECTION 06 — Know Your Numbers */}
       <section className="py-12 bg-white border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-8">
@@ -347,7 +321,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── SECTION 07: REGULATORY UPDATES ───────────────────── */}
+      {/* SECTION 07 — Regulatory Updates */}
       <section className="py-12 bg-gray-50 border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-end justify-between mb-6">
@@ -356,9 +330,7 @@ export default function HomePage() {
               <h2 className="font-display text-2xl font-bold text-navy">What just changed — and what it means for you</h2>
               <p className="text-gray-400 text-sm mt-1 max-w-xl">IRDAI regulations, government policy changes, and budget updates — explained in plain language.</p>
             </div>
-            <Link href="/policies" className="hidden sm:flex items-center gap-1 text-red text-sm font-semibold hover:gap-2 transition-all whitespace-nowrap">
-              All updates <ArrowRight size={13} />
-            </Link>
+            <Link href="/policies" className="hidden sm:flex items-center gap-1 text-red text-sm font-semibold hover:gap-2 transition-all whitespace-nowrap">All updates <ArrowRight size={13} /></Link>
           </div>
           <div className="mb-8">
             <div className="flex items-center gap-3 mb-4">
@@ -387,7 +359,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── SECTION 08: MYTH BUSTERS — with filter ───────────── */}
+      {/* SECTION 08 — Myth Busters with filter */}
       <section className="py-12 bg-white border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-end justify-between mb-2">
@@ -396,19 +368,11 @@ export default function HomePage() {
               <h2 className="font-display text-2xl font-bold text-navy">Real questions. No sales pitch.</h2>
               <p className="text-gray-400 text-sm mt-1 max-w-xl">The most common fears and myths about life insurance — answered with data, not marketing.</p>
             </div>
-            <Link href="/courses" className="hidden sm:flex items-center gap-1 text-red text-sm font-semibold hover:gap-2 transition-all whitespace-nowrap">
-              All myth busters <ArrowRight size={13} />
-            </Link>
+            <Link href="/courses" className="hidden sm:flex items-center gap-1 text-red text-sm font-semibold hover:gap-2 transition-all whitespace-nowrap">All myth busters <ArrowRight size={13} /></Link>
           </div>
-
-          {/* Filter tabs */}
           <div className="flex flex-wrap gap-2 my-5">
-            {mythTags.map(tag => (
-              <TagBtn key={tag} label={tag} active={mythTag === tag} onClick={() => setMythTag(tag)} />
-            ))}
+            {mythTags.map(tag => <TagBtn key={tag} label={tag} active={mythTag === tag} onClick={() => setMythTag(tag)} />)}
           </div>
-
-          {/* Filtered myth videos */}
           {mythVideos.length > 0 ? (
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
               {mythVideos.map(v => <VideoCard key={v.id} video={v} />)}
@@ -419,7 +383,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── SECTION 09: EXISTING POLICYHOLDERS ───────────────── */}
+      {/* SECTION 09 — Existing Policyholders */}
       <section className="py-12 bg-gray-50 border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="relative rounded-2xl overflow-hidden hero-bg p-8 md:p-10">
@@ -451,7 +415,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── SECTION 10: NOT SURE WHERE TO START ──────────────── */}
+      {/* SECTION 10 — Not Sure Where to Start */}
       <section className="py-12 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mx-auto text-center mb-10">
