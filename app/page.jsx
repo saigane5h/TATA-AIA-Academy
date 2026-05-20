@@ -5,45 +5,86 @@ import Link from 'next/link'
 import { featuredVideos, policyVideos } from '@/lib/data'
 import { Play, ArrowRight, BadgeCheck, Share2, ChevronRight, Calendar, TrendingUp } from 'lucide-react'
 
+// ── Paste your short video embed code here ────────────────────
 const SHORT_REEL_EMBED_CODE = ''
-// Paste your short video embed code above between the quotes when ready
 
-function VideoCard({ video }) {
+// ── Short video reel data ─────────────────────────────────────
+const reels = [
+  { title: 'What is Term Insurance?',           duration: '0:32', thumb: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=300&q=80' },
+  { title: 'How to File a Claim in 3 Steps',    duration: '0:45', thumb: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=300&q=80' },
+  { title: 'ULIP vs Term — Which is Better?',   duration: '0:28', thumb: 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=300&q=80' },
+  { title: 'Critical Illness — Are You Covered?', duration: '0:38', thumb: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=300&q=80' },
+  { title: 'Tax Savings on Life Insurance',     duration: '0:41', thumb: 'https://images.unsplash.com/photo-1568992688065-536aad8a12f6?w=300&q=80' },
+]
+
+// ── Shared play button — identical on ALL cards ───────────────
+function PlayBtn({ large = false }) {
   return (
-    <div className="group cursor-pointer flex-shrink-0 w-52 snap-start">
-      <div className="relative rounded-xl overflow-hidden aspect-video mb-2 bg-gray-800">
+    <div className={`rounded-full bg-white/25 border-2 border-white/50 flex items-center justify-center group-hover:bg-red group-hover:border-red transition-all duration-300 flex-shrink-0 ${large ? 'w-14 h-14' : 'w-9 h-9'}`}>
+      <Play size={large ? 22 : 13} className="text-white ml-0.5" />
+    </div>
+  )
+}
+
+// ── 16:9 strip card (hero carousel) ──────────────────────────
+function StripCard({ video }) {
+  return (
+    <div className="group cursor-pointer flex-shrink-0 snap-start" style={{width:'200px'}}>
+      <div className="relative rounded-xl overflow-hidden" style={{width:'200px', height:'113px', background:'#0d1b35'}}>
         <img src={video.thumbnail} alt={video.title}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-          onError={e => { e.target.style.opacity = '0.3' }} />
-        <div className="absolute inset-0 bg-black/25 group-hover:bg-black/10 transition-colors" />
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="w-9 h-9 rounded-full bg-white/25 border border-white/50 flex items-center justify-center group-hover:bg-red group-hover:border-red transition-all duration-300">
-            <Play size={13} className="text-white ml-1" />
-          </div>
-        </div>
+          style={{width:'200px', height:'113px', objectFit:'cover'}}
+          className="group-hover:scale-105 transition-transform duration-500"
+          onError={e => { e.target.style.opacity='0.3' }} />
+        <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors" />
+        <div className="absolute inset-0 flex items-center justify-center"><PlayBtn /></div>
         <span className="absolute bottom-2 right-2 bg-black/70 rounded px-1.5 py-0.5 text-[10px] text-white font-medium">{video.duration}</span>
         {video.tag && <span className={`absolute top-2 left-2 badge ${video.tagColor} text-[9px]`}>{video.tag}</span>}
         <button className="absolute bottom-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity bg-white/90 rounded px-1.5 py-0.5 text-[10px] font-semibold text-navy flex items-center gap-1">
           <Share2 size={9} /> Share
         </button>
       </div>
-      <p className="text-white/70 text-xs font-medium leading-snug line-clamp-2 group-hover:text-white transition-colors">{video.title}</p>
+      <p className="text-white/70 text-xs font-medium mt-2 line-clamp-2 leading-snug group-hover:text-white transition-colors">{video.title}</p>
     </div>
   )
 }
 
-function GridVideoCard({ video }) {
+// ── 9:16 reel card (short videos) ────────────────────────────
+function ReelCard({ reel, index }) {
+  return (
+    <div className="group cursor-pointer flex-shrink-0 snap-start" style={{width:'108px'}}>
+      <div className="relative rounded-xl overflow-hidden border border-white/10" style={{width:'108px', height:'192px', background:'#0d1b35'}}>
+        {SHORT_REEL_EMBED_CODE && index === 0 ? (
+          <div className="w-full h-full" dangerouslySetInnerHTML={{__html: SHORT_REEL_EMBED_CODE}} />
+        ) : (
+          <>
+            <img src={reel.thumb} alt={reel.title}
+              style={{width:'108px', height:'192px', objectFit:'cover'}}
+              className="group-hover:scale-105 transition-transform duration-500"
+              onError={e => { e.target.style.opacity='0.3' }} />
+            <div className="absolute inset-0 bg-black/25 group-hover:bg-black/10 transition-colors" />
+          </>
+        )}
+        <div className="absolute inset-0 flex items-center justify-center"><PlayBtn /></div>
+        <span className="absolute bottom-2 right-2 bg-black/70 rounded px-1.5 py-0.5 text-[9px] text-white font-medium">{reel.duration}</span>
+      </div>
+      <p className="text-white/70 text-[11px] font-medium mt-2 line-clamp-2 leading-snug group-hover:text-white transition-colors">{reel.title}</p>
+    </div>
+  )
+}
+
+// ── Grid video card (sections below hero) ────────────────────
+function GridCard({ video }) {
   return (
     <div className="group cursor-pointer">
       <div className="relative rounded-xl overflow-hidden aspect-video mb-3 bg-gray-100">
         <img src={video.thumbnail} alt={video.title}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-          onError={e => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex' }} />
+          onError={e => { e.target.style.display='none'; e.target.nextSibling.style.display='flex' }} />
         <div className="hidden w-full h-full bg-navy items-center justify-center absolute inset-0" />
         <div className="absolute inset-0 bg-black/25 group-hover:bg-black/10 transition-colors" />
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="w-11 h-11 rounded-full bg-white/25 border-2 border-white/50 flex items-center justify-center group-hover:bg-red group-hover:border-red transition-all">
-            <Play size={15} className="text-white ml-1" />
+            <Play size={15} className="text-white ml-0.5" />
           </div>
         </div>
         <span className="absolute bottom-2.5 right-2.5 bg-black/70 rounded px-2 py-0.5 text-xs text-white font-medium">{video.duration}</span>
@@ -52,7 +93,7 @@ function GridVideoCard({ video }) {
           <Share2 size={9} /> Share
         </button>
       </div>
-      <h3 className="font-semibold text-navy group-hover:text-red transition-colors leading-snug text-sm">{video.title}</h3>
+      <h3 className="font-semibold text-navy text-sm leading-snug group-hover:text-red transition-colors">{video.title}</h3>
     </div>
   )
 }
@@ -64,7 +105,7 @@ function GuideTile({ g }) {
         <div className="relative h-28 overflow-hidden">
           <img src={g.thumb} alt={g.title}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            onError={e => e.target.style.opacity = '0.3'} />
+            onError={e => e.target.style.opacity='0.3'} />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
           <span className={`absolute top-2 left-2 badge ${g.tagColor} text-[9px]`}>{g.tag}</span>
           <span className="absolute bottom-2 right-2 bg-black/60 rounded-full px-1.5 py-0.5 text-[10px] text-white flex items-center gap-1"><Play size={7} />{g.videos}</span>
@@ -85,7 +126,7 @@ function PolicyRow({ pv }) {
         <div className="relative flex-shrink-0 w-24 sm:w-36 h-16 sm:h-20 rounded-xl overflow-hidden bg-gray-100">
           <img src={pv.thumbnail} alt={pv.title}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            onError={e => e.target.style.opacity = '0.3'} />
+            onError={e => e.target.style.opacity='0.3'} />
           <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
             <div className="w-8 h-8 rounded-full bg-red flex items-center justify-center">
               <Play size={13} className="text-white ml-0.5" />
@@ -117,39 +158,35 @@ function TagBtn({ label, active, onClick }) {
   )
 }
 
-const reels = [
-  { title: 'What is Term Insurance?', duration: '0:32', thumb: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=300&q=80' },
-  { title: 'How to File a Claim in 3 Steps', duration: '0:45', thumb: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=300&q=80' },
-  { title: 'ULIP vs Term — Which is Better?', duration: '0:28', thumb: 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=300&q=80' },
-  { title: 'Critical Illness — Are You Covered?', duration: '0:38', thumb: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=300&q=80' },
-  { title: 'Tax Savings on Life Insurance', duration: '0:41', thumb: 'https://images.unsplash.com/photo-1568992688065-536aad8a12f6?w=300&q=80' },
-]
-
 export default function HomePage() {
-  const essentialsTags = ['All', 'Basics', 'Planning', 'Claims', 'Critical illness', 'Benefits', 'Must know', 'Tax & cover', 'Myth busted']
+  const essentialsTags = ['All','Basics','Planning','Claims','Critical illness','Benefits','Must know','Tax & cover','Myth busted']
   const [essentialsTag, setEssentialsTag] = useState('All')
-  const mythTags = ['All', 'Myth busted', 'FAQ']
+  const mythTags = ['All','Myth busted','FAQ']
   const [mythTag, setMythTag] = useState('All')
 
   const essentialsVideos = featuredVideos.filter(v =>
-    essentialsTag === 'All' ? !['Myth busted', 'FAQ'].includes(v.tag) : v.tag === essentialsTag
+    essentialsTag === 'All' ? !['Myth busted','FAQ'].includes(v.tag) : v.tag === essentialsTag
   )
   const mythVideos = featuredVideos.filter(v =>
-    mythTag === 'All' ? ['Myth busted', 'FAQ'].includes(v.tag) : v.tag === mythTag
+    mythTag === 'All' ? ['Myth busted','FAQ'].includes(v.tag) : v.tag === mythTag
   )
 
   return (
     <div className="bg-gray-50">
 
-      {/* HERO */}
+      {/* ── HERO ─────────────────────────────────────────────── */}
       <section className="hero-bg relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_75%_50%,rgba(227,24,55,0.1),transparent_60%)]" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-10 pb-0">
+
+          {/* Eyebrow */}
           <div className="flex items-center gap-2 mb-5">
             <BadgeCheck size={13} className="text-red" />
             <span className="text-xs font-semibold text-white/50 uppercase tracking-widest">Tata AIA Life Insurance Academy</span>
           </div>
-          <div className="grid lg:grid-cols-2 gap-10 items-start">
+
+          {/* Headline + Hero video */}
+          <div className="grid lg:grid-cols-2 gap-10 items-start mb-8">
             <div>
               <h1 className="font-display font-bold text-white leading-tight mb-2" style={{fontSize:'clamp(2rem,4.5vw,3.4rem)'}}>
                 Life insurance, finally explained.
@@ -158,7 +195,7 @@ export default function HomePage() {
               <p className="text-white/50 text-base leading-relaxed mb-7 max-w-lg mt-3">
                 India's most complete life insurance resource. Videos, guides, tools and expert answers — everything you need to buy right, understand your cover, and claim with confidence.
               </p>
-              <div className="flex flex-wrap gap-3 mb-10">
+              <div className="flex flex-wrap gap-3">
                 <Link href="/courses" className="btn-red px-7 py-3.5 text-sm inline-flex items-center gap-2 shadow-lg shadow-red/20">
                   <Play size={15} /> Start Learning
                 </Link>
@@ -185,11 +222,11 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* SPLIT CAROUSEL */}
+          {/* ── SPLIT CAROUSEL ─────────────────────────────────── */}
           <div className="pb-10">
-            <div className="grid lg:grid-cols-2 gap-6">
+            <div className="grid lg:grid-cols-2 gap-6 items-start">
 
-              {/* LEFT — Featured Videos */}
+              {/* LEFT — Featured 16:9 videos */}
               <div>
                 <div className="flex items-center justify-between mb-3">
                   <p className="text-white/35 text-xs font-semibold uppercase tracking-wider">📹 Featured Videos</p>
@@ -197,18 +234,18 @@ export default function HomePage() {
                     All videos <ArrowRight size={11} />
                   </Link>
                 </div>
-                <div className="flex gap-3 overflow-x-auto snap-x pb-2" style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
-                  {featuredVideos.slice(0, 6).map(v => <VideoCard key={v.id} video={v} />)}
-                  <Link href="/courses" className="flex-shrink-0 w-36 snap-start">
-                    <div className="aspect-video rounded-xl border-2 border-dashed border-white/15 flex flex-col items-center justify-center gap-2 hover:border-red/40 transition-all">
-                      <ArrowRight size={16} className="text-white/30" />
-                      <span className="text-[11px] text-white/30 text-center px-2">More videos</span>
+                <div className="flex gap-3 overflow-x-auto snap-x pb-2" style={{scrollbarWidth:'none', WebkitOverflowScrolling:'touch'}}>
+                  {featuredVideos.slice(0,6).map(v => <StripCard key={v.id} video={v} />)}
+                  <Link href="/courses" className="flex-shrink-0 snap-start group" style={{width:'120px'}}>
+                    <div className="rounded-xl border-2 border-dashed border-white/15 hover:border-red/40 flex flex-col items-center justify-center gap-2 transition-all" style={{width:'120px', height:'68px'}}>
+                      <ArrowRight size={14} className="text-white/30 group-hover:text-red transition-colors" />
+                      <span className="text-[10px] text-white/30 group-hover:text-red transition-colors">More</span>
                     </div>
                   </Link>
                 </div>
               </div>
 
-              {/* RIGHT — Short Videos 9:16 portrait cards */}
+              {/* RIGHT — Short 9:16 reels */}
               <div>
                 <div className="flex items-center justify-between mb-3">
                   <p className="text-white/35 text-xs font-semibold uppercase tracking-wider">🎬 Short Videos</p>
@@ -216,35 +253,13 @@ export default function HomePage() {
                     See more <ArrowRight size={11} />
                   </a>
                 </div>
-                <div className="flex gap-4 overflow-x-auto snap-x pb-2" style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
-                  {reels.map((reel, i) => (
-                    <div key={i} className="flex-shrink-0 snap-start group cursor-pointer" style={{width:'130px'}}>
-                      <div className="relative rounded-2xl overflow-hidden shadow-lg border border-white/10"
-                        style={{aspectRatio:'9/16', background:'#1a1a2e'}}>
-                        {SHORT_REEL_EMBED_CODE && i === 0 ? (
-                          <div className="w-full h-full" dangerouslySetInnerHTML={{__html: SHORT_REEL_EMBED_CODE}} />
-                        ) : (
-                          <>
-                            <img src={reel.thumb} alt={reel.title}
-                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                            <div className="absolute inset-0 bg-black/15 group-hover:bg-black/5 transition-colors" />
-                          </>
-                        )}
-                        <div className="absolute bottom-3 right-3 w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                          <Play size={13} className="text-white ml-0.5" />
-                        </div>
-                        <div className="absolute bottom-3 left-2">
-                          <span className="bg-black/60 rounded text-[9px] text-white px-1.5 py-0.5">{reel.duration}</span>
-                        </div>
-                      </div>
-                      <p className="text-white/75 text-xs font-medium mt-2 line-clamp-2 leading-snug">{reel.title}</p>
-                    </div>
-                  ))}
-                  <a href="/courses" style={{textDecoration:'none'}} className="flex-shrink-0 snap-start" >
-                    <div className="rounded-2xl border-2 border-dashed border-white/15 hover:border-red/50 transition-all flex flex-col items-center justify-center gap-2"
-                      style={{aspectRatio:'9/16', width:'130px'}}>
-                      <ArrowRight size={20} className="text-white/30" />
-                      <span className="text-[10px] text-white/30 text-center px-2 leading-tight">See all</span>
+                <div className="flex gap-3 overflow-x-auto snap-x pb-2" style={{scrollbarWidth:'none', WebkitOverflowScrolling:'touch'}}>
+                  {reels.map((reel, i) => <ReelCard key={i} reel={reel} index={i} />)}
+                  {/* See all card — same 192px height as reel cards */}
+                  <a href="/courses" style={{textDecoration:'none'}} className="flex-shrink-0 snap-start group cursor-pointer">
+                    <div className="rounded-xl border-2 border-dashed border-white/15 hover:border-red/50 flex flex-col items-center justify-center gap-2 transition-all" style={{width:'108px', height:'192px'}}>
+                      <ArrowRight size={18} className="text-white/30 group-hover:text-red transition-colors" />
+                      <span className="text-[10px] text-white/30 group-hover:text-red text-center px-2 leading-tight transition-colors">See all</span>
                     </div>
                   </a>
                 </div>
@@ -254,10 +269,10 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* TICKER — plain <a> tags, guaranteed clickable */}
+        {/* ── TICKER — plain <a> tags, always clickable ─────────── */}
         <div className="border-t border-white/8 bg-white/5">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex flex-wrap gap-x-8 gap-y-1.5">
-            {['Term Insurance', 'ULIP', 'Whole Life', 'Critical Illness', 'Claim Settlement', 'Tax Benefits', 'Riders', 'Endowment'].map((t, i) => (
+            {['Term Insurance','ULIP','Whole Life','Critical Illness','Claim Settlement','Tax Benefits','Riders','Endowment'].map((t,i) => (
               <a key={i} href="/courses" style={{textDecoration:'none'}}
                 className="text-[11px] text-white/30 uppercase tracking-widest flex items-center gap-2 whitespace-nowrap hover:text-red transition-colors duration-200 cursor-pointer">
                 <span className="text-red text-[7px]">◆</span>{t}
@@ -267,7 +282,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* SECTION 02 — Start Here */}
+      {/* ── SECTION 02: START HERE ───────────────────────────── */}
       <section className="py-12 bg-white border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-end justify-between mb-2">
@@ -279,11 +294,11 @@ export default function HomePage() {
             <Link href="/courses" className="hidden sm:flex items-center gap-1 text-red text-sm font-semibold hover:gap-2 transition-all whitespace-nowrap">All videos <ArrowRight size={13} /></Link>
           </div>
           <div className="flex flex-wrap gap-2 my-5">
-            {essentialsTags.map(tag => <TagBtn key={tag} label={tag} active={essentialsTag === tag} onClick={() => setEssentialsTag(tag)} />)}
+            {essentialsTags.map(tag => <TagBtn key={tag} label={tag} active={essentialsTag===tag} onClick={() => setEssentialsTag(tag)} />)}
           </div>
           {essentialsVideos.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
-              {essentialsVideos.slice(0, 4).map(v => <GridVideoCard key={v.id} video={v} />)}
+              {essentialsVideos.slice(0,4).map(v => <GridCard key={v.id} video={v} />)}
             </div>
           ) : (
             <div className="text-center py-12 text-gray-400 text-sm">No videos in this category yet.</div>
@@ -291,7 +306,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* SECTION 03 — Trending */}
+      {/* ── SECTION 03: TRENDING ─────────────────────────────── */}
       <section className="py-12 bg-gray-50 border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-end justify-between mb-6">
@@ -303,7 +318,7 @@ export default function HomePage() {
             <Link href="/courses" className="hidden sm:flex items-center gap-1 text-red text-sm font-semibold hover:gap-2 transition-all whitespace-nowrap">See all <ArrowRight size={13} /></Link>
           </div>
           <div className="flex flex-wrap gap-3">
-            {['GST exemption on insurance', 'Term vs ULIP', 'Claim rejection reasons', 'Protection gap calculator', 'Insurance for self-employed', 'Single woman & life cover'].map((t, i) => (
+            {['GST exemption on insurance','Term vs ULIP','Claim rejection reasons','Protection gap calculator','Insurance for self-employed','Single woman & life cover'].map((t,i) => (
               <Link href="/courses" key={i} className="flex items-center gap-2 bg-white border border-gray-200 hover:border-red/40 hover:text-red text-gray-600 text-sm font-medium rounded-full px-4 py-2 transition-all group">
                 <TrendingUp size={13} className="text-red" />{t}
                 <ChevronRight size={12} className="opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -313,7 +328,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* SECTION 04 — For Your Situation */}
+      {/* ── SECTION 04: FOR YOUR SITUATION ──────────────────── */}
       <section className="py-12 bg-white border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-8">
@@ -323,13 +338,13 @@ export default function HomePage() {
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {[
-              { title: 'Just starting out', desc: "First job, first policy — what you actually need and what you don't", icon: '🌱', color: 'hover:border-green-300' },
-              { title: 'Growing family', desc: 'How much cover your family needs and which plan protects them best', icon: '👨‍👩‍👧', color: 'hover:border-blue-300' },
-              { title: 'Peak earning years', desc: 'Maximise your cover, optimise your tax, and close your protection gap', icon: '📈', color: 'hover:border-purple-300' },
-              { title: 'Planning for retirement', desc: 'Annuities, whole life cover, and making sure your money lasts', icon: '🏡', color: 'hover:border-amber-300' },
-              { title: 'Already have a policy', desc: "Understand what you're covered for and get everything your policy offers", icon: '📋', color: 'hover:border-red/40' },
-              { title: 'Self-employed or freelance', desc: "No employer cover? Here's what you need to protect yourself and your income", icon: '💼', color: 'hover:border-teal-300' },
-            ].map((card, i) => (
+              {title:'Just starting out', desc:"First job, first policy — what you actually need and what you don't", icon:'🌱', color:'hover:border-green-300'},
+              {title:'Growing family', desc:'How much cover your family needs and which plan protects them best', icon:'👨‍👩‍👧', color:'hover:border-blue-300'},
+              {title:'Peak earning years', desc:'Maximise your cover, optimise your tax, and close your protection gap', icon:'📈', color:'hover:border-purple-300'},
+              {title:'Planning for retirement', desc:'Annuities, whole life cover, and making sure your money lasts', icon:'🏡', color:'hover:border-amber-300'},
+              {title:'Already have a policy', desc:"Understand what you're covered for and get everything your policy offers", icon:'📋', color:'hover:border-red/40'},
+              {title:'Self-employed or freelance', desc:"No employer cover? Here's what you need to protect yourself and your income", icon:'💼', color:'hover:border-teal-300'},
+            ].map((card,i) => (
               <Link href="/courses" key={i} className="block group">
                 <div className={`bg-white border border-gray-200 ${card.color} rounded-2xl p-5 transition-all group-hover:shadow-md`}>
                   <span className="text-2xl mb-3 block">{card.icon}</span>
@@ -342,7 +357,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* SECTION 05 — Topic Guides */}
+      {/* ── SECTION 05: TOPIC GUIDES ─────────────────────────── */}
       <section className="py-12 bg-gray-50 border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-end justify-between mb-6">
@@ -355,20 +370,20 @@ export default function HomePage() {
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
             {[
-              { title: 'Life insurance basics', sub: 'What every Indian family needs to know', videos: 5, thumb: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=400&q=80', tag: 'Start Here', tagColor: 'bg-red text-white' },
-              { title: 'How claims work', sub: 'Process, documents, timelines', videos: 4, thumb: 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&q=80', tag: 'Claims', tagColor: 'bg-green-600 text-white' },
-              { title: 'Choosing the right plan', sub: 'Term, ULIP, whole life, endowment', videos: 4, thumb: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&q=80', tag: 'Planning', tagColor: 'bg-purple-600 text-white' },
-              { title: 'Critical illness cover', sub: 'Cancer, heart attack, stroke and more', videos: 3, thumb: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=400&q=80', tag: 'Important', tagColor: 'bg-amber-500 text-white' },
-              { title: 'Tax & life insurance', sub: '80C, 10(10D), GST exemption', videos: 3, thumb: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&q=80', tag: 'Tax', tagColor: 'bg-blue-600 text-white' },
-              { title: 'Riders & add-ons', sub: "What's worth adding and what's not", videos: 3, thumb: 'https://images.unsplash.com/photo-1492725764893-90b379c2b6e7?w=400&q=80', tag: 'Tips', tagColor: 'bg-teal-600 text-white' },
-              { title: 'Switching & portability', sub: 'Move insurers without losing benefits', videos: 3, thumb: 'https://images.unsplash.com/photo-1568992688065-536aad8a12f6?w=400&q=80', tag: 'Tips', tagColor: 'bg-blue-500 text-white' },
-              { title: 'Retirement planning', sub: 'Annuities, whole life, legacy planning', videos: 4, thumb: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&q=80', tag: 'Retirement', tagColor: 'bg-navy text-white' },
-            ].map((g, i) => <GuideTile key={i} g={g} />)}
+              {title:'Life insurance basics', sub:'What every Indian family needs to know', videos:5, thumb:'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=400&q=80', tag:'Start Here', tagColor:'bg-red text-white'},
+              {title:'How claims work', sub:'Process, documents, timelines', videos:4, thumb:'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&q=80', tag:'Claims', tagColor:'bg-green-600 text-white'},
+              {title:'Choosing the right plan', sub:'Term, ULIP, whole life, endowment', videos:4, thumb:'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&q=80', tag:'Planning', tagColor:'bg-purple-600 text-white'},
+              {title:'Critical illness cover', sub:'Cancer, heart attack, stroke and more', videos:3, thumb:'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=400&q=80', tag:'Important', tagColor:'bg-amber-500 text-white'},
+              {title:'Tax & life insurance', sub:'80C, 10(10D), GST exemption', videos:3, thumb:'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&q=80', tag:'Tax', tagColor:'bg-blue-600 text-white'},
+              {title:'Riders & add-ons', sub:"What's worth adding and what's not", videos:3, thumb:'https://images.unsplash.com/photo-1492725764893-90b379c2b6e7?w=400&q=80', tag:'Tips', tagColor:'bg-teal-600 text-white'},
+              {title:'Switching & portability', sub:'Move insurers without losing benefits', videos:3, thumb:'https://images.unsplash.com/photo-1568992688065-536aad8a12f6?w=400&q=80', tag:'Tips', tagColor:'bg-blue-500 text-white'},
+              {title:'Retirement planning', sub:'Annuities, whole life, legacy planning', videos:4, thumb:'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&q=80', tag:'Retirement', tagColor:'bg-navy text-white'},
+            ].map((g,i) => <GuideTile key={i} g={g} />)}
           </div>
         </div>
       </section>
 
-      {/* SECTION 06 — Know Your Numbers */}
+      {/* ── SECTION 06: KNOW YOUR NUMBERS ───────────────────── */}
       <section className="py-12 bg-white border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-8">
@@ -378,11 +393,11 @@ export default function HomePage() {
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {[
-              { icon: '🛡️', title: 'How much cover do I need?', desc: 'Life cover calculator — based on income, dependants and liabilities' },
-              { icon: '💰', title: 'What will my premium be?', desc: 'Premium estimator — age, cover amount, policy term' },
-              { icon: '📊', title: "What's my protection gap?", desc: "See how much of your family's financial need is currently uncovered" },
-              { icon: '⚖️', title: 'Term vs ULIP — which wins?', desc: 'Compare returns and cover across different scenarios' },
-            ].map((tool, i) => (
+              {icon:'🛡️', title:'How much cover do I need?', desc:'Life cover calculator — based on income, dependants and liabilities'},
+              {icon:'💰', title:'What will my premium be?', desc:'Premium estimator — age, cover amount, policy term'},
+              {icon:'📊', title:"What's my protection gap?", desc:"See how much of your family's financial need is currently uncovered"},
+              {icon:'⚖️', title:'Term vs ULIP — which wins?', desc:'Compare returns and cover across different scenarios'},
+            ].map((tool,i) => (
               <div key={i} className="card p-5 hover:border-red/25 cursor-pointer group transition-all">
                 <span className="text-2xl mb-3 block">{tool.icon}</span>
                 <h3 className="font-semibold text-navy text-sm mb-2 group-hover:text-red transition-colors leading-snug">{tool.title}</h3>
@@ -394,14 +409,14 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* SECTION 07 — Regulatory Updates */}
+      {/* ── SECTION 07: REGULATORY UPDATES ─────────────────── */}
       <section className="py-12 bg-gray-50 border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-end justify-between mb-6">
             <div>
               <p className="text-red text-xs font-semibold uppercase tracking-wider mb-1">Stay current</p>
               <h2 className="font-display text-2xl font-bold text-navy">What just changed — and what it means for you</h2>
-              <p className="text-gray-400 text-sm mt-1 max-w-xl">IRDAI regulations, government policy changes, and budget updates — explained in plain language.</p>
+              <p className="text-gray-400 text-sm mt-1 max-w-xl">IRDAI regulations, government policy changes, and budget updates — in plain language.</p>
             </div>
             <Link href="/policies" className="hidden sm:flex items-center gap-1 text-red text-sm font-semibold hover:gap-2 transition-all whitespace-nowrap">All updates <ArrowRight size={13} /></Link>
           </div>
@@ -414,7 +429,7 @@ export default function HomePage() {
               </div>
             </div>
             <div className="grid sm:grid-cols-2 gap-4">
-              {policyVideos.slice(0, 2).map(pv => <PolicyRow key={pv.id} pv={pv} />)}
+              {policyVideos.slice(0,2).map(pv => <PolicyRow key={pv.id} pv={pv} />)}
             </div>
           </div>
           <div>
@@ -426,13 +441,13 @@ export default function HomePage() {
               </div>
             </div>
             <div className="grid sm:grid-cols-2 gap-4">
-              {policyVideos.slice(2, 4).map(pv => <PolicyRow key={pv.id} pv={pv} />)}
+              {policyVideos.slice(2,4).map(pv => <PolicyRow key={pv.id} pv={pv} />)}
             </div>
           </div>
         </div>
       </section>
 
-      {/* SECTION 08 — Myth Busters */}
+      {/* ── SECTION 08: MYTH BUSTERS ─────────────────────────── */}
       <section className="py-12 bg-white border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-end justify-between mb-2">
@@ -444,11 +459,11 @@ export default function HomePage() {
             <Link href="/courses" className="hidden sm:flex items-center gap-1 text-red text-sm font-semibold hover:gap-2 transition-all whitespace-nowrap">All myth busters <ArrowRight size={13} /></Link>
           </div>
           <div className="flex flex-wrap gap-2 my-5">
-            {mythTags.map(tag => <TagBtn key={tag} label={tag} active={mythTag === tag} onClick={() => setMythTag(tag)} />)}
+            {mythTags.map(tag => <TagBtn key={tag} label={tag} active={mythTag===tag} onClick={() => setMythTag(tag)} />)}
           </div>
           {mythVideos.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
-              {mythVideos.map(v => <GridVideoCard key={v.id} video={v} />)}
+              {mythVideos.map(v => <GridCard key={v.id} video={v} />)}
             </div>
           ) : (
             <div className="text-center py-12 text-gray-400 text-sm">No videos in this category yet.</div>
@@ -456,7 +471,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* SECTION 09 — Existing Policyholders */}
+      {/* ── SECTION 09: EXISTING POLICYHOLDERS ─────────────── */}
       <section className="py-12 bg-gray-50 border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="relative rounded-2xl overflow-hidden hero-bg p-8 md:p-10">
@@ -469,11 +484,11 @@ export default function HomePage() {
               </p>
               <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
                 {[
-                  { title: 'Understand your policy document', desc: 'What the fine print actually says' },
-                  { title: 'Add a rider to your existing policy', desc: 'Critical illness, accidental death, waiver of premium' },
-                  { title: 'How to make a life insurance claim', desc: 'Step by step — documents, timelines, what to expect' },
-                  { title: 'Is your cover still enough?', desc: 'Your needs change — your cover should too' },
-                ].map((link, i) => (
+                  {title:'Understand your policy document', desc:'What the fine print actually says'},
+                  {title:'Add a rider to your existing policy', desc:'Critical illness, accidental death, waiver of premium'},
+                  {title:'How to make a life insurance claim', desc:'Step by step — documents, timelines, what to expect'},
+                  {title:'Is your cover still enough?', desc:'Your needs change — your cover should too'},
+                ].map((link,i) => (
                   <Link href="/courses" key={i} className="bg-white/10 border border-white/15 hover:bg-white/15 hover:border-white/30 rounded-xl p-3.5 transition-all group">
                     <h4 className="font-semibold text-white text-xs mb-1 group-hover:text-red transition-colors">{link.title}</h4>
                     <p className="text-white/40 text-[11px] leading-snug">{link.desc}</p>
@@ -488,7 +503,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* SECTION 10 — Not Sure Where to Start */}
+      {/* ── SECTION 10: NOT SURE WHERE TO START ─────────────── */}
       <section className="py-12 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mx-auto text-center mb-10">
@@ -499,10 +514,10 @@ export default function HomePage() {
           </div>
           <div className="grid sm:grid-cols-3 gap-4 mb-8">
             {[
-              { icon: '🛒', title: 'I want to buy life insurance', desc: 'Start with how much cover you need, then find the right plan' },
-              { icon: '⚖️', title: 'I want to compare my options', desc: "Term vs ULIP vs whole life — see what's right for your situation" },
-              { icon: '📋', title: 'I already have a policy', desc: "Understand your cover, add riders, or check if you're adequately protected" },
-            ].map((path, i) => (
+              {icon:'🛒', title:'I want to buy life insurance', desc:'Start with how much cover you need, then find the right plan'},
+              {icon:'⚖️', title:'I want to compare my options', desc:"Term vs ULIP vs whole life — see what's right for your situation"},
+              {icon:'📋', title:'I already have a policy', desc:"Understand your cover, add riders, or check if you're adequately protected"},
+            ].map((path,i) => (
               <Link href="/courses" key={i} className="block group">
                 <div className="card p-6 text-center hover:border-red/30 hover:shadow-md transition-all">
                   <span className="text-3xl mb-3 block">{path.icon}</span>
@@ -520,7 +535,7 @@ export default function HomePage() {
                 'Term vs ULIP — which is right for me?',
                 'What gets life insurance claims rejected — and how to avoid it',
                 'How does the GST exemption affect my premium?',
-              ].map((q, i) => (
+              ].map((q,i) => (
                 <li key={i}>
                   <Link href="/courses" className="flex items-center gap-2 text-sm text-gray-600 hover:text-red transition-colors p-2 rounded-lg hover:bg-white">
                     <ChevronRight size={13} className="text-red flex-shrink-0" />{q}
