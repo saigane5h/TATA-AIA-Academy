@@ -5,6 +5,9 @@ import Link from 'next/link'
 import { featuredVideos, policyVideos } from '@/lib/data'
 import { Play, ArrowRight, BadgeCheck, Share2, ChevronRight, Calendar, TrendingUp } from 'lucide-react'
 
+const SHORT_REEL_EMBED_CODE = ''
+// Paste your short video embed code above between the quotes when ready
+
 function VideoCard({ video }) {
   return (
     <div className="group cursor-pointer flex-shrink-0 w-52 snap-start">
@@ -114,41 +117,13 @@ function TagBtn({ label, active, onClick }) {
   )
 }
 
-// ── SHORT REEL EMBED ──────────────────────────────────────────
-// Paste your iframe/embed code between the backticks below
-// Works with: YouTube Shorts, Instagram Reels, TikTok, Mux, Wistia, any iframe
-const SHORT_REEL_EMBED_CODE = ``
-
-function ShortReelPlayer() {
-  if (SHORT_REEL_EMBED_CODE.trim()) {
-    return (
-      <div className="w-full h-full"
-        dangerouslySetInnerHTML={{ __html: SHORT_REEL_EMBED_CODE }} />
-    )
-  }
-  return (
-    <div className="w-full h-full flex flex-col items-center justify-center gap-3 bg-navy-800 p-4 text-center">
-      <div className="w-14 h-14 rounded-2xl bg-red/15 border border-red/25 flex items-center justify-center">
-        <Play size={26} className="text-red/70 ml-1" />
-      </div>
-      <p className="text-white/60 text-xs font-semibold">Short Video Reels</p>
-      <p className="text-white/30 text-[11px] leading-relaxed">
-        Paste your embed code into<br />
-        <code className="text-red/60 bg-red/10 px-1 py-0.5 rounded text-[10px]">SHORT_REEL_EMBED_CODE</code>
-      </p>
-      <div className="mt-2 space-y-1.5 w-full">
-        {['0:32 · What is term insurance?', '0:45 · Claim in 3 steps', '0:28 · ULIP explained'].map((r, i) => (
-          <div key={i} className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-lg px-3 py-2">
-            <div className="w-6 h-6 rounded-full bg-red/20 flex items-center justify-center flex-shrink-0">
-              <Play size={9} className="text-red ml-0.5" />
-            </div>
-            <span className="text-white/50 text-[11px]">{r}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
+const reels = [
+  { title: 'What is Term Insurance?', duration: '0:32', thumb: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=300&q=80' },
+  { title: 'How to File a Claim in 3 Steps', duration: '0:45', thumb: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=300&q=80' },
+  { title: 'ULIP vs Term — Which is Better?', duration: '0:28', thumb: 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=300&q=80' },
+  { title: 'Critical Illness — Are You Covered?', duration: '0:38', thumb: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=300&q=80' },
+  { title: 'Tax Savings on Life Insurance', duration: '0:41', thumb: 'https://images.unsplash.com/photo-1568992688065-536aad8a12f6?w=300&q=80' },
+]
 
 export default function HomePage() {
   const essentialsTags = ['All', 'Basics', 'Planning', 'Claims', 'Critical illness', 'Benefits', 'Must know', 'Tax & cover', 'Myth busted']
@@ -213,11 +188,14 @@ export default function HomePage() {
           {/* SPLIT CAROUSEL */}
           <div className="pb-10">
             <div className="grid lg:grid-cols-2 gap-6">
-              {/* Left — Featured Videos */}
+
+              {/* LEFT — Featured Videos */}
               <div>
                 <div className="flex items-center justify-between mb-3">
                   <p className="text-white/35 text-xs font-semibold uppercase tracking-wider">📹 Featured Videos</p>
-                  <Link href="/courses" className="text-red text-xs font-semibold flex items-center gap-1 hover:gap-2 transition-all">All videos <ArrowRight size={11} /></Link>
+                  <Link href="/courses" className="text-red text-xs font-semibold flex items-center gap-1 hover:gap-2 transition-all">
+                    All videos <ArrowRight size={11} />
+                  </Link>
                 </div>
                 <div className="flex gap-3 overflow-x-auto snap-x pb-2" style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
                   {featuredVideos.slice(0, 6).map(v => <VideoCard key={v.id} video={v} />)}
@@ -229,29 +207,61 @@ export default function HomePage() {
                   </Link>
                 </div>
               </div>
-              {/* Right — Short Reels */}
+
+              {/* RIGHT — Short Videos 9:16 portrait cards */}
               <div>
                 <div className="flex items-center justify-between mb-3">
-                  <p className="text-white/35 text-xs font-semibold uppercase tracking-wider">🎬 Short Reels</p>
-                  <span className="text-white/25 text-xs">Vertical · 9:16</span>
+                  <p className="text-white/35 text-xs font-semibold uppercase tracking-wider">🎬 Short Videos</p>
+                  <a href="/courses" style={{textDecoration:'none'}} className="text-red text-xs font-semibold flex items-center gap-1 hover:gap-2 transition-all">
+                    See more <ArrowRight size={11} />
+                  </a>
                 </div>
-                <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-lg"
-                  style={{ aspectRatio: '9/16', maxHeight: '340px' }}>
-                  <ShortReelPlayer />
+                <div className="flex gap-4 overflow-x-auto snap-x pb-2" style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
+                  {reels.map((reel, i) => (
+                    <div key={i} className="flex-shrink-0 snap-start group cursor-pointer" style={{width:'130px'}}>
+                      <div className="relative rounded-2xl overflow-hidden shadow-lg border border-white/10"
+                        style={{aspectRatio:'9/16', background:'#1a1a2e'}}>
+                        {SHORT_REEL_EMBED_CODE && i === 0 ? (
+                          <div className="w-full h-full" dangerouslySetInnerHTML={{__html: SHORT_REEL_EMBED_CODE}} />
+                        ) : (
+                          <>
+                            <img src={reel.thumb} alt={reel.title}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                            <div className="absolute inset-0 bg-black/15 group-hover:bg-black/5 transition-colors" />
+                          </>
+                        )}
+                        <div className="absolute bottom-3 right-3 w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                          <Play size={13} className="text-white ml-0.5" />
+                        </div>
+                        <div className="absolute bottom-3 left-2">
+                          <span className="bg-black/60 rounded text-[9px] text-white px-1.5 py-0.5">{reel.duration}</span>
+                        </div>
+                      </div>
+                      <p className="text-white/75 text-xs font-medium mt-2 line-clamp-2 leading-snug">{reel.title}</p>
+                    </div>
+                  ))}
+                  <a href="/courses" style={{textDecoration:'none'}} className="flex-shrink-0 snap-start" >
+                    <div className="rounded-2xl border-2 border-dashed border-white/15 hover:border-red/50 transition-all flex flex-col items-center justify-center gap-2"
+                      style={{aspectRatio:'9/16', width:'130px'}}>
+                      <ArrowRight size={20} className="text-white/30" />
+                      <span className="text-[10px] text-white/30 text-center px-2 leading-tight">See all</span>
+                    </div>
+                  </a>
                 </div>
               </div>
+
             </div>
           </div>
         </div>
 
-        {/* TICKER — clickable */}
+        {/* TICKER — plain <a> tags, guaranteed clickable */}
         <div className="border-t border-white/8 bg-white/5">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex flex-wrap gap-x-8 gap-y-1.5">
             {['Term Insurance', 'ULIP', 'Whole Life', 'Critical Illness', 'Claim Settlement', 'Tax Benefits', 'Riders', 'Endowment'].map((t, i) => (
-              <Link key={i} href="/courses"
-                className="text-[11px] text-white/30 uppercase tracking-widest flex items-center gap-2 whitespace-nowrap hover:text-red transition-colors duration-200">
+              <a key={i} href="/courses" style={{textDecoration:'none'}}
+                className="text-[11px] text-white/30 uppercase tracking-widest flex items-center gap-2 whitespace-nowrap hover:text-red transition-colors duration-200 cursor-pointer">
                 <span className="text-red text-[7px]">◆</span>{t}
-              </Link>
+              </a>
             ))}
           </div>
         </div>
