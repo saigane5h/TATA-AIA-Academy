@@ -199,12 +199,11 @@ export default function HomePage() {
 
         {/* Ticker */}
         <div className="border-t border-white/8 bg-white/5">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex flex-wrap gap-x-8 gap-y-1 overflow-hidden">
-            {['Term Insurance', 'ULIP', 'Whole Life', 'Critical Illness', 'Claim Settlement', 'Tax Benefits', 'Riders', 'Endowment'].map((t, i) => (
-              <span key={i} className="text-[11px] text-white/20 uppercase tracking-widest flex items-center gap-2 whitespace-nowrap">
-                <span className="text-red text-[7px]">◆</span>{t}
-              </span>
-            ))}
+          {['Term Insurance', 'ULIP', 'Whole Life', 'Critical Illness', 'Claim Settlement', 'Tax Benefits', 'Riders', 'Endowment'].map((t, i) => (
+  <Link key={i} href="/courses" className="text-[11px] text-white/25 uppercase tracking-widest flex items-center gap-2 whitespace-nowrap hover:text-red transition-colors cursor-pointer">
+    <span className="text-red text-[7px]">◆</span>{t}
+  </Link>
+))}
           </div>
         </div>
       </section>
