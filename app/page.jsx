@@ -55,7 +55,7 @@ function PolicyRow({ pv }) {
   return (
     <Link href="/policies" className="block group">
       <div className="card flex gap-4 p-4 items-start hover:border-red/25 transition-all">
-        <div className="relative flex-shrink-0 w-36 h-20 rounded-xl overflow-hidden bg-gray-100">
+        <div className="relative flex-shrink-0 w-24 sm:w-36 h-16 sm:h-20 rounded-xl overflow-hidden bg-gray-100">
           <img src={pv.thumbnail} alt={pv.title}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             onError={e => e.target.style.opacity='0.3'} />
@@ -109,7 +109,7 @@ export default function HomePage() {
       {/* HERO */}
       <section className="hero-bg relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_75%_50%,rgba(227,24,55,0.1),transparent_60%)]" />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-0">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-10 pb-0">
           <div className="flex items-center gap-2 mb-5">
             <BadgeCheck size={13} className="text-red" />
             <span className="text-xs font-semibold text-white/50 uppercase tracking-widest">Tata AIA Life Insurance Academy</span>
@@ -186,7 +186,7 @@ export default function HomePage() {
         <div className="border-t border-white/8 bg-white/5">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex flex-wrap gap-x-8 gap-y-1 overflow-hidden">
             {['Term Insurance', 'ULIP', 'Whole Life', 'Critical Illness', 'Claim Settlement', 'Tax Benefits', 'Riders', 'Endowment'].map((t, i) => (
-              <Link key={i} href="/courses" className="text-[11px] text-white/25 uppercase tracking-widest flex items-center gap-2 whitespace-nowrap hover:text-red transition-colors cursor-pointer">
+              <Link key={i} href="/courses" className="text-[11px] text-white/25 uppercase tracking-widest flex items-center gap-2 whitespace-nowrap hover:text-red transition-colors">
                 <span className="text-red text-[7px]">◆</span>{t}
               </Link>
             ))}
@@ -194,7 +194,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* SECTION 02 — Start Here with filter */}
+      {/* SECTION 02 — Start Here */}
       <section className="py-12 bg-white border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-end justify-between mb-2">
@@ -209,7 +209,7 @@ export default function HomePage() {
             {essentialsTags.map(tag => <TagBtn key={tag} label={tag} active={essentialsTag === tag} onClick={() => setEssentialsTag(tag)} />)}
           </div>
           {essentialsVideos.length > 0 ? (
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
               {essentialsVideos.slice(0, 4).map(v => <VideoCard key={v.id} video={v} />)}
             </div>
           ) : (
@@ -258,7 +258,7 @@ export default function HomePage() {
               { title: 'Self-employed or freelance', desc: "No employer cover? Here's what you need to protect yourself and your income", icon: '💼', color: 'hover:border-teal-300' },
             ].map((card, i) => (
               <Link href="/courses" key={i} className="block group">
-                <div className={`bg-white border border-gray-200 ${card.color} rounded-2xl p-5 cursor-pointer transition-all group-hover:shadow-md`}>
+                <div className={`bg-white border border-gray-200 ${card.color} rounded-2xl p-5 transition-all group-hover:shadow-md`}>
                   <span className="text-2xl mb-3 block">{card.icon}</span>
                   <h3 className="font-semibold text-navy text-sm mb-1.5 group-hover:text-red transition-colors">{card.title}</h3>
                   <p className="text-xs text-gray-400 leading-relaxed">{card.desc}</p>
@@ -280,7 +280,7 @@ export default function HomePage() {
             </div>
             <Link href="/courses" className="hidden sm:flex items-center gap-1 text-red text-sm font-semibold hover:gap-2 transition-all whitespace-nowrap">Browse all guides <ArrowRight size={13} /></Link>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
             {[
               { title: 'Life insurance basics', sub: 'What every Indian family needs to know', videos: 5, thumb: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=400&q=80', tag: 'Start Here', tagColor: 'bg-red text-white' },
               { title: 'How claims work', sub: 'Process, documents, timelines', videos: 4, thumb: 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&q=80', tag: 'Claims', tagColor: 'bg-green-600 text-white' },
@@ -359,7 +359,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* SECTION 08 — Myth Busters with filter */}
+      {/* SECTION 08 — Myth Busters */}
       <section className="py-12 bg-white border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-end justify-between mb-2">
@@ -374,7 +374,7 @@ export default function HomePage() {
             {mythTags.map(tag => <TagBtn key={tag} label={tag} active={mythTag === tag} onClick={() => setMythTag(tag)} />)}
           </div>
           {mythVideos.length > 0 ? (
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
               {mythVideos.map(v => <VideoCard key={v.id} video={v} />)}
             </div>
           ) : (
