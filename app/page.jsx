@@ -2,20 +2,44 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { featuredVideos, policyVideos, videoSeries } from '@/lib/data'
-import { Play, ArrowRight, Shield, BadgeCheck, Share2, ChevronRight, Clock, Calendar, TrendingUp, Calculator } from 'lucide-react'
+import { featuredVideos, policyVideos } from '@/lib/data'
+import { Play, ArrowRight, BadgeCheck, Share2, ChevronRight, Calendar, TrendingUp } from 'lucide-react'
 
 function VideoCard({ video }) {
+  return (
+    <div className="group cursor-pointer flex-shrink-0 w-52 snap-start">
+      <div className="relative rounded-xl overflow-hidden aspect-video mb-2 bg-gray-800">
+        <img src={video.thumbnail} alt={video.title}
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          onError={e => { e.target.style.opacity = '0.3' }} />
+        <div className="absolute inset-0 bg-black/25 group-hover:bg-black/10 transition-colors" />
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="w-9 h-9 rounded-full bg-white/25 border border-white/50 flex items-center justify-center group-hover:bg-red group-hover:border-red transition-all duration-300">
+            <Play size={13} className="text-white ml-1" />
+          </div>
+        </div>
+        <span className="absolute bottom-2 right-2 bg-black/70 rounded px-1.5 py-0.5 text-[10px] text-white font-medium">{video.duration}</span>
+        {video.tag && <span className={`absolute top-2 left-2 badge ${video.tagColor} text-[9px]`}>{video.tag}</span>}
+        <button className="absolute bottom-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity bg-white/90 rounded px-1.5 py-0.5 text-[10px] font-semibold text-navy flex items-center gap-1">
+          <Share2 size={9} /> Share
+        </button>
+      </div>
+      <p className="text-white/70 text-xs font-medium leading-snug line-clamp-2 group-hover:text-white transition-colors">{video.title}</p>
+    </div>
+  )
+}
+
+function GridVideoCard({ video }) {
   return (
     <div className="group cursor-pointer">
       <div className="relative rounded-xl overflow-hidden aspect-video mb-3 bg-gray-100">
         <img src={video.thumbnail} alt={video.title}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-          onError={e => { e.target.style.display='none'; e.target.nextSibling.style.display='flex' }} />
-        <div className="hidden w-full h-full bg-gradient-to-br from-navy-700 to-navy items-center justify-center absolute inset-0" />
+          onError={e => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex' }} />
+        <div className="hidden w-full h-full bg-navy items-center justify-center absolute inset-0" />
         <div className="absolute inset-0 bg-black/25 group-hover:bg-black/10 transition-colors" />
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className="w-11 h-11 rounded-full bg-white/25 border-2 border-white/50 flex items-center justify-center group-hover:bg-red group-hover:border-red transition-all duration-300">
+          <div className="w-11 h-11 rounded-full bg-white/25 border-2 border-white/50 flex items-center justify-center group-hover:bg-red group-hover:border-red transition-all">
             <Play size={15} className="text-white ml-1" />
           </div>
         </div>
@@ -37,7 +61,7 @@ function GuideTile({ g }) {
         <div className="relative h-28 overflow-hidden">
           <img src={g.thumb} alt={g.title}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            onError={e => e.target.style.opacity='0.3'} />
+            onError={e => e.target.style.opacity = '0.3'} />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
           <span className={`absolute top-2 left-2 badge ${g.tagColor} text-[9px]`}>{g.tag}</span>
           <span className="absolute bottom-2 right-2 bg-black/60 rounded-full px-1.5 py-0.5 text-[10px] text-white flex items-center gap-1"><Play size={7} />{g.videos}</span>
@@ -58,7 +82,7 @@ function PolicyRow({ pv }) {
         <div className="relative flex-shrink-0 w-24 sm:w-36 h-16 sm:h-20 rounded-xl overflow-hidden bg-gray-100">
           <img src={pv.thumbnail} alt={pv.title}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            onError={e => e.target.style.opacity='0.3'} />
+            onError={e => e.target.style.opacity = '0.3'} />
           <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
             <div className="w-8 h-8 rounded-full bg-red flex items-center justify-center">
               <Play size={13} className="text-white ml-0.5" />
@@ -87,6 +111,42 @@ function TagBtn({ label, active, onClick }) {
       }`}>
       {label}
     </button>
+  )
+}
+
+// ── SHORT REEL EMBED ──────────────────────────────────────────
+// Paste your iframe/embed code between the backticks below
+// Works with: YouTube Shorts, Instagram Reels, TikTok, Mux, Wistia, any iframe
+const SHORT_REEL_EMBED_CODE = ``
+
+function ShortReelPlayer() {
+  if (SHORT_REEL_EMBED_CODE.trim()) {
+    return (
+      <div className="w-full h-full"
+        dangerouslySetInnerHTML={{ __html: SHORT_REEL_EMBED_CODE }} />
+    )
+  }
+  return (
+    <div className="w-full h-full flex flex-col items-center justify-center gap-3 bg-navy-800 p-4 text-center">
+      <div className="w-14 h-14 rounded-2xl bg-red/15 border border-red/25 flex items-center justify-center">
+        <Play size={26} className="text-red/70 ml-1" />
+      </div>
+      <p className="text-white/60 text-xs font-semibold">Short Video Reels</p>
+      <p className="text-white/30 text-[11px] leading-relaxed">
+        Paste your embed code into<br />
+        <code className="text-red/60 bg-red/10 px-1 py-0.5 rounded text-[10px]">SHORT_REEL_EMBED_CODE</code>
+      </p>
+      <div className="mt-2 space-y-1.5 w-full">
+        {['0:32 · What is term insurance?', '0:45 · Claim in 3 steps', '0:28 · ULIP explained'].map((r, i) => (
+          <div key={i} className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-lg px-3 py-2">
+            <div className="w-6 h-6 rounded-full bg-red/20 flex items-center justify-center flex-shrink-0">
+              <Play size={9} className="text-red ml-0.5" />
+            </div>
+            <span className="text-white/50 text-[11px]">{r}</span>
+          </div>
+        ))}
+      </div>
+    </div>
   )
 }
 
@@ -150,43 +210,46 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Featured video strip */}
+          {/* SPLIT CAROUSEL */}
           <div className="pb-10">
-            <div className="flex items-center justify-between mb-4">
-              <p className="text-white/35 text-xs font-semibold uppercase tracking-wider">Featured Videos</p>
-              <Link href="/courses" className="text-red text-xs font-semibold flex items-center gap-1 hover:gap-2 transition-all">All videos <ArrowRight size={11} /></Link>
-            </div>
-            <div className="flex gap-3 overflow-x-auto snap-x pb-2" style={{ scrollbarWidth: 'none' }}>
-              {featuredVideos.slice(0, 6).map(v => (
-                <div key={v.id} className="flex-shrink-0 w-56 snap-start group cursor-pointer">
-                  <div className="relative rounded-xl overflow-hidden aspect-video mb-2">
-                    <img src={v.thumbnail} alt={v.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      onError={e => e.target.style.opacity='0.3'} />
-                    <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors" />
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-9 h-9 rounded-full bg-white/25 border border-white/40 flex items-center justify-center group-hover:bg-red group-hover:border-red transition-all">
-                        <Play size={13} className="text-white ml-0.5" />
-                      </div>
-                    </div>
-                    <span className="absolute bottom-2 right-2 bg-black/70 rounded text-[10px] text-white px-1.5 py-0.5">{v.duration}</span>
-                    <span className={`absolute top-2 left-2 badge ${v.tagColor} text-[9px]`}>{v.tag}</span>
-                    <button className="absolute bottom-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity bg-white/90 rounded px-1.5 py-0.5 text-[10px] font-semibold text-navy flex items-center gap-1">
-                      <Share2 size={9} /> Share
-                    </button>
-                  </div>
-                  <p className="text-white/70 text-xs font-medium leading-snug line-clamp-2 group-hover:text-white transition-colors">{v.title}</p>
+            <div className="grid lg:grid-cols-2 gap-6">
+              {/* Left — Featured Videos */}
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <p className="text-white/35 text-xs font-semibold uppercase tracking-wider">📹 Featured Videos</p>
+                  <Link href="/courses" className="text-red text-xs font-semibold flex items-center gap-1 hover:gap-2 transition-all">All videos <ArrowRight size={11} /></Link>
                 </div>
-              ))}
+                <div className="flex gap-3 overflow-x-auto snap-x pb-2" style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
+                  {featuredVideos.slice(0, 6).map(v => <VideoCard key={v.id} video={v} />)}
+                  <Link href="/courses" className="flex-shrink-0 w-36 snap-start">
+                    <div className="aspect-video rounded-xl border-2 border-dashed border-white/15 flex flex-col items-center justify-center gap-2 hover:border-red/40 transition-all">
+                      <ArrowRight size={16} className="text-white/30" />
+                      <span className="text-[11px] text-white/30 text-center px-2">More videos</span>
+                    </div>
+                  </Link>
+                </div>
+              </div>
+              {/* Right — Short Reels */}
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <p className="text-white/35 text-xs font-semibold uppercase tracking-wider">🎬 Short Reels</p>
+                  <span className="text-white/25 text-xs">Vertical · 9:16</span>
+                </div>
+                <div className="relative rounded-2xl overflow-hidden border border-white/10 shadow-lg"
+                  style={{ aspectRatio: '9/16', maxHeight: '340px' }}>
+                  <ShortReelPlayer />
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Ticker — clickable */}
+        {/* TICKER — clickable */}
         <div className="border-t border-white/8 bg-white/5">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex flex-wrap gap-x-8 gap-y-1 overflow-hidden">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex flex-wrap gap-x-8 gap-y-1.5">
             {['Term Insurance', 'ULIP', 'Whole Life', 'Critical Illness', 'Claim Settlement', 'Tax Benefits', 'Riders', 'Endowment'].map((t, i) => (
-              <Link key={i} href="/courses" className="text-[11px] text-white/25 uppercase tracking-widest flex items-center gap-2 whitespace-nowrap hover:text-red transition-colors">
+              <Link key={i} href="/courses"
+                className="text-[11px] text-white/30 uppercase tracking-widest flex items-center gap-2 whitespace-nowrap hover:text-red transition-colors duration-200">
                 <span className="text-red text-[7px]">◆</span>{t}
               </Link>
             ))}
@@ -210,7 +273,7 @@ export default function HomePage() {
           </div>
           {essentialsVideos.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
-              {essentialsVideos.slice(0, 4).map(v => <VideoCard key={v.id} video={v} />)}
+              {essentialsVideos.slice(0, 4).map(v => <GridVideoCard key={v.id} video={v} />)}
             </div>
           ) : (
             <div className="text-center py-12 text-gray-400 text-sm">No videos in this category yet.</div>
@@ -227,7 +290,7 @@ export default function HomePage() {
               <h2 className="font-display text-2xl font-bold text-navy">Trending this week</h2>
               <p className="text-gray-400 text-sm mt-1">The life insurance questions Indians are searching for right now — answered.</p>
             </div>
-            <Link href="/courses" className="hidden sm:flex items-center gap-1 text-red text-sm font-semibold hover:gap-2 transition-all whitespace-nowrap">See all trending <ArrowRight size={13} /></Link>
+            <Link href="/courses" className="hidden sm:flex items-center gap-1 text-red text-sm font-semibold hover:gap-2 transition-all whitespace-nowrap">See all <ArrowRight size={13} /></Link>
           </div>
           <div className="flex flex-wrap gap-3">
             {['GST exemption on insurance', 'Term vs ULIP', 'Claim rejection reasons', 'Protection gap calculator', 'Insurance for self-employed', 'Single woman & life cover'].map((t, i) => (
@@ -278,7 +341,7 @@ export default function HomePage() {
               <h2 className="font-display text-2xl font-bold text-navy">Everything on one topic, in one place</h2>
               <p className="text-gray-400 text-sm mt-1">From buying basics to claim settlements — every topic covered in full.</p>
             </div>
-            <Link href="/courses" className="hidden sm:flex items-center gap-1 text-red text-sm font-semibold hover:gap-2 transition-all whitespace-nowrap">Browse all guides <ArrowRight size={13} /></Link>
+            <Link href="/courses" className="hidden sm:flex items-center gap-1 text-red text-sm font-semibold hover:gap-2 transition-all whitespace-nowrap">Browse all <ArrowRight size={13} /></Link>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
             {[
@@ -375,7 +438,7 @@ export default function HomePage() {
           </div>
           {mythVideos.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
-              {mythVideos.map(v => <VideoCard key={v.id} video={v} />)}
+              {mythVideos.map(v => <GridVideoCard key={v.id} video={v} />)}
             </div>
           ) : (
             <div className="text-center py-12 text-gray-400 text-sm">No videos in this category yet.</div>
