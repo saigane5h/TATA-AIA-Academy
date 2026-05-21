@@ -17,13 +17,7 @@ function HeroVideo() {
         {playing ? (
           // Once clicked — iframe loads and plays immediately
           <div className="video-wrapper"
-            dangerouslySetInnerHTML={{ __html: `<iframe src='https://ktpl.kpoint.com/web/videos/gcc-2ddf9906-1b9f-4ce2-80e3-da11af723c7e/nv4/embedded' allowFullScreen webkitallowFullScreen mozallowFullScreen width='640' height='360' rel='nofollow' style='border:0px data-video-params='{
-  "resume": false,
-  "suppressGlobalTemplate": false,
-  "search": true,
-  "like": false,
-  "autoplay": true
-};'></iframe>` }}
+            dangerouslySetInnerHTML={{ __html: `<iframe src='https://ktpl.kpoint.com/web/videos/gcc-2ddf9906-1b9f-4ce2-80e3-da11af723c7e/nv4/embedded' allowFullScreen webkitallowFullScreen mozallowFullScreen width='640' height='360' rel='nofollow' style='border:0px;' data-video-params='{"resume":false,"suppressGlobalTemplate":false,"search":false,"like":false,"autoplay":true}'></iframe>` }}
           />
         ) : (
           // Before click — thumbnail with play button and title
