@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { featuredVideos, policyVideos } from '@/lib/data'
 import { Play, ArrowRight, BadgeCheck, Share2, ChevronRight, Calendar, TrendingUp } from 'lucide-react'
@@ -11,14 +11,32 @@ const SHORT_REEL_EMBED_CODE = ''
 // ── Hero video — thumbnail shown until clicked, then iframe loads ──
 function HeroVideo() {
   const [playing, setPlaying] = useState(false)
+  const embedRef = useRef(null)
+
+  useEffect(() => {
+    if (!playing) return
+    const script = document.createElement('script')
+    script.src = 'https://ktpl.kpoint.com/assets/orca/media/embed/player-silk.js'
+    script.async = true
+    document.body.appendChild(script)
+    return () => { script.remove() }
+  }, [playing])
+
   return (
     <div className="hidden lg:block">
       <div className="relative rounded-2xl overflow-hidden border border-white/15 shadow-2xl">
         {playing ? (
           // Once clicked — iframe loads and plays immediately
-          <div className="video-wrapper"
-            dangerouslySetInnerHTML={{ __html: `<iframe src='https://ktpl.kpoint.com/web/videos/gcc-2ddf9906-1b9f-4ce2-80e3-da11af723c7e/nv4/embedded' allowFullScreen webkitallowFullScreen mozallowFullScreen width='640' height='360' rel='nofollow' style='border:0px;' data-video-params='{"resume":false,"suppressGlobalTemplate":false,"search":false,"like":false,"autoplay":true}'></iframe>` }}
-          />
+          <div className="video-wrapper" ref={embedRef}>
+            <div
+              data-init-dynamic
+              data-video-host="ktpl.kpoint.com"
+              data-kvideo-id="gcc-2ddf9906-1b9f-4ce2-80e3-da11af723c7e"
+              data-samesite="true"
+              data-video-params='{"autoplay":true}'
+              style={{ width: '100%' }}
+            />
+          </div>
         ) : (
           // Before click — thumbnail with play button and title
           <div className="relative aspect-video cursor-pointer group" onClick={() => setPlaying(true)}>
