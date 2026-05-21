@@ -215,6 +215,7 @@ export default function HomePage() {
             </div>
         </div>
       </div>
+               </div>
 
           {/* ── SPLIT CAROUSEL ─────────────────────────────────── */}
           <div className="pb-10">
