@@ -8,7 +8,45 @@ import { Play, ArrowRight, BadgeCheck, Share2, ChevronRight, Calendar, TrendingU
 // ── Paste your short video embed code here ────────────────────
 const SHORT_REEL_EMBED_CODE = ''
 
-// ── Short video reel data ─────────────────────────────────────
+// ── Hero video — thumbnail shown until clicked, then iframe loads ──
+function HeroVideo() {
+  const [playing, setPlaying] = useState(false)
+  return (
+    <div className="hidden lg:block">
+      <div className="relative rounded-2xl overflow-hidden border border-white/15 shadow-2xl">
+        {playing ? (
+          // Once clicked — iframe loads and plays immediately
+          <div className="video-wrapper"
+            dangerouslySetInnerHTML={{ __html: `<iframe src='https://ktpl.kpoint.com/web/videos/gcc-2ddf9906-1b9f-4ce2-80e3-da11af723c7e/nv4/embedded?autoplay=1' allowFullScreen webkitallowFullScreen mozallowFullScreen width='640' height='360' rel='nofollow' style='border:0px;'></iframe>` }}
+          />
+        ) : (
+          // Before click — thumbnail with play button and title
+          <div className="relative aspect-video cursor-pointer group" onClick={() => setPlaying(true)}>
+            <img
+              src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=800&q=80"
+              alt="Why life insurance is not what you think it is"
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            />
+            <div className="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-colors" />
+            {/* Play button */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-16 h-16 rounded-full bg-red flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform">
+                <Play size={24} className="text-white ml-1" />
+              </div>
+            </div>
+            {/* Title — disappears on click since this whole block unmounts */}
+            <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
+              <p className="text-white font-semibold text-sm">Why life insurance is not what you think it is</p>
+              <p className="text-white/50 text-xs mt-0.5">3 min · Start here</p>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+
 const reels = [
   { title: 'What is Term Insurance?',           duration: '0:32', thumb: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=300&q=80' },
   { title: 'How to File a Claim in 3 Steps',    duration: '0:45', thumb: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=300&q=80' },
@@ -204,18 +242,7 @@ export default function HomePage() {
                 </Link>
               </div>
             </div>
-          <div className="hidden lg:block">
-              <div className="relative rounded-2xl overflow-hidden border border-white/15 shadow-2xl"
-                onClick={e => e.currentTarget.querySelector('.video-overlay').style.opacity = '0'}>
-                <div className="video-wrapper"
-                  dangerouslySetInnerHTML={{ __html: `<iframe src='https://ktpl.kpoint.com/web/videos/gcc-2ddf9906-1b9f-4ce2-80e3-da11af723c7e/nv4/embedded' allowFullScreen webkitallowFullScreen mozallowFullScreen width='640' height='360' rel='nofollow' style='border: 0px;'></iframe>` }}
-                />
-                <div className="video-overlay absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent pointer-events-none transition-opacity duration-500">
-                  <p className="text-white font-semibold text-sm">Why life insurance is not what you think it is</p>
-                  <p className="text-white/50 text-xs mt-0.5">3 min · Start here</p>
-                </div>
-              </div>
-            </div>
+            <HeroVideo />
           </div>
 
           {/* ── SPLIT CAROUSEL ─────────────────────────────────── */}
