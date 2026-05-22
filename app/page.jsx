@@ -534,7 +534,7 @@ export default function HomePage() {
               </p>
               <div className="flex flex-wrap gap-3">
                 <Link href="/courses" className="btn-red px-7 py-3.5 text-sm inline-flex items-center gap-2 shadow-lg shadow-red/20">
-                  <Play size={15} /> Start Learning
+                  <Play size={15} /> Find Your Answers
                 </Link>
                 <Link href="/policies" className="btn-outline px-7 py-3.5 text-sm inline-flex items-center gap-2">
                   What's New
