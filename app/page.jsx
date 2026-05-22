@@ -2,11 +2,25 @@
 
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
+import Script from 'next/script'
 import { featuredVideos, policyVideos } from '@/lib/data'
-import { Play, ArrowRight, BadgeCheck, Share2, ChevronRight, Calendar, TrendingUp } from 'lucide-react'
+import { Play, ArrowRight, BadgeCheck, Share2, ChevronRight, ChevronLeft, Calendar, TrendingUp, X } from 'lucide-react'
 
-// ── Paste your short video embed code here ────────────────────
-const SHORT_REEL_EMBED_CODE = ''
+const REELS_HOST = 'ktpl.kpoint.com'
+
+const vthumb = (id) =>
+  `https://${REELS_HOST}/media/data.ap-southeast-1.kpoint/ktpl.kpoint.in/ktpl.kpoint.com/kapsule/${id}/v4/i/vthumb.jpg`
+
+const gthumb = (id) =>
+  `https://${REELS_HOST}/media/data.ap-southeast-1.kpoint/ktpl.kpoint.in/ktpl.kpoint.com/kapsule/${id}/v4/i/thumb.jpg`
+
+const gccVideos = [
+  { id: 'gcc-3048f3df-f2d0-419c-a8c1-c84a660f8897', title: 'Life Insurance Explained' },
+  { id: 'gcc-a97a3c26-7011-4312-85a3-f0724dad58e5', title: 'Policy Benefits & Coverage' },
+  { id: 'gcc-5ef75afa-e47b-4863-bb23-09c5234b4dda', title: 'How to Choose the Right Plan' },
+  { id: 'gcc-f5cecef7-8272-4a12-a5bd-fe366ccfa195', title: 'Claim Settlement Guide' },
+  { id: 'gcc-6d7af790-a531-4f15-8754-0f20f6b9ed16', title: 'Smart Insurance Planning' },
+]
 
 // ── Hero video — thumbnail shown until clicked, then iframe loads ──
 function HeroVideo() {
@@ -41,9 +55,10 @@ function HeroVideo() {
           // Before click — thumbnail with play button and title
           <div className="relative aspect-video cursor-pointer group" onClick={() => setPlaying(true)}>
             <img
-              src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=800&q=80"
+              src={gthumb('gcc-2ddf9906-1b9f-4ce2-80e3-da11af723c7e')}
               alt="Why life insurance is not what you think it is"
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              onError={e => { e.target.src = 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=800&q=80' }}
             />
             <div className="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-colors" />
             {/* Play button */}
@@ -66,11 +81,11 @@ function HeroVideo() {
 
 
 const reels = [
-  { title: 'What is Term Insurance?',           duration: '0:32', thumb: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=300&q=80' },
-  { title: 'How to File a Claim in 3 Steps',    duration: '0:45', thumb: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=300&q=80' },
-  { title: 'ULIP vs Term — Which is Better?',   duration: '0:28', thumb: 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=300&q=80' },
-  { title: 'Critical Illness — Are You Covered?', duration: '0:38', thumb: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=300&q=80' },
-  { title: 'Tax Savings on Life Insurance',     duration: '0:41', thumb: 'https://images.unsplash.com/photo-1568992688065-536aad8a12f6?w=300&q=80' },
+  { id: 'gcc-b95dd34d-81ca-424a-b9a4-05fe1df79a3c', title: 'What is Term Insurance?',             duration: '0:32' },
+  { id: 'gcc-cf479c95-9a01-4a71-8f2e-69a5da14833d', title: 'How to File a Claim in 3 Steps',      duration: '0:45' },
+  { id: 'gcc-b7ac4612-c863-4fe4-a12d-d6e034d1857a', title: 'ULIP vs Term — Which is Better?',     duration: '0:28' },
+  { id: 'gcc-6991f4ee-e383-4826-b6d8-92b3afbb20d9', title: 'Critical Illness — Are You Covered?', duration: '0:38' },
+  { id: 'gcc-7ed6a23c-5420-4cbf-861c-93f61c018aef', title: 'Tax Savings on Life Insurance',       duration: '0:41' },
 ]
 
 // ── Shared play button — identical on ALL cards ───────────────
@@ -105,25 +120,232 @@ function StripCard({ video }) {
 }
 
 // ── 9:16 reel card (short videos) ────────────────────────────
-function ReelCard({ reel, index }) {
+function ReelCard({ reel, onClick }) {
   return (
-    <div className="group cursor-pointer flex-shrink-0 snap-start" style={{width:'108px'}}>
+    <div className="group cursor-pointer flex-shrink-0 snap-start" style={{width:'108px'}} onClick={onClick}>
       <div className="relative rounded-xl overflow-hidden border border-white/10" style={{width:'108px', height:'192px', background:'#0d1b35'}}>
-        {SHORT_REEL_EMBED_CODE && index === 0 ? (
-          <div className="w-full h-full" dangerouslySetInnerHTML={{__html: SHORT_REEL_EMBED_CODE}} />
-        ) : (
-          <>
-            <img src={reel.thumb} alt={reel.title}
-              style={{width:'108px', height:'192px', objectFit:'cover'}}
-              className="group-hover:scale-105 transition-transform duration-500"
-              onError={e => { e.target.style.opacity='0.3' }} />
-            <div className="absolute inset-0 bg-black/25 group-hover:bg-black/10 transition-colors" />
-          </>
-        )}
+        <img
+          src={vthumb(reel.id)}
+          alt={reel.title}
+          style={{width:'108px', height:'192px', objectFit:'cover'}}
+          className="group-hover:scale-105 transition-transform duration-500"
+          onError={e => { e.target.style.display = 'none' }}
+        />
         <div className="absolute inset-0 flex items-center justify-center"><PlayBtn /></div>
         <span className="absolute bottom-2 right-2 bg-black/70 rounded px-1.5 py-0.5 text-[9px] text-white font-medium">{reel.duration}</span>
       </div>
       <p className="text-white/70 text-[11px] font-medium mt-2 line-clamp-2 leading-snug group-hover:text-white transition-colors">{reel.title}</p>
+    </div>
+  )
+}
+
+// ── GCC embed — re-mounts via key to reload player on each video ─
+function GCCVideoPlayer({ videoId }) {
+  useEffect(() => {
+    const s = document.createElement('script')
+    s.src = 'https://ktpl.kpoint.com/assets/orca/media/embed/player-silk.js'
+    s.async = true
+    document.body.appendChild(s)
+    return () => s.remove()
+  }, [])
+  return (
+    <div className="video-wrapper" style={{ width: '100%' }}>
+      <div
+        data-init-dynamic
+        data-video-host="ktpl.kpoint.com"
+        data-kvideo-id={videoId}
+        data-samesite="true"
+        data-video-params='{"autoplay":true}'
+        style={{ width: '100%' }}
+      />
+    </div>
+  )
+}
+
+// ── Modal popup with left/right navigation ────────────────────
+function GCCModal({ videos, startIndex, onClose }) {
+  const [current, setCurrent] = useState(startIndex)
+
+  useEffect(() => {
+    document.body.style.overflow = 'hidden'
+    return () => { document.body.style.overflow = '' }
+  }, [])
+
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === 'Escape') onClose()
+      if (e.key === 'ArrowLeft') setCurrent(p => Math.max(0, p - 1))
+      if (e.key === 'ArrowRight') setCurrent(p => Math.min(videos.length - 1, p + 1))
+    }
+    document.addEventListener('keydown', onKey)
+    return () => document.removeEventListener('keydown', onKey)
+  }, [onClose, videos.length])
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8"
+      style={{ background: 'rgba(0,0,0,0.88)' }}
+      onClick={onClose}
+    >
+      <div className="relative w-full max-w-4xl" onClick={e => e.stopPropagation()}>
+
+        {/* Video container */}
+        <div className="relative aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl">
+          <GCCVideoPlayer key={videos[current].id} videoId={videos[current].id} />
+
+          {/* Close */}
+          <button
+            onClick={onClose}
+            className="absolute top-3 right-3 z-20 p-1.5 rounded-full bg-black/60 hover:bg-black/90 text-white/80 hover:text-white transition-all"
+            aria-label="Close"
+          >
+            <X size={16} />
+          </button>
+
+          {/* Prev arrow */}
+          <button
+            onClick={e => { e.stopPropagation(); setCurrent(p => Math.max(0, p - 1)) }}
+            disabled={current === 0}
+            className="absolute left-3 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-black/55 hover:bg-black/80 text-white transition-all disabled:opacity-20 disabled:cursor-not-allowed"
+            aria-label="Previous video"
+          >
+            <ChevronLeft size={24} />
+          </button>
+
+          {/* Next arrow */}
+          <button
+            onClick={e => { e.stopPropagation(); setCurrent(p => Math.min(videos.length - 1, p + 1)) }}
+            disabled={current === videos.length - 1}
+            className="absolute right-3 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-black/55 hover:bg-black/80 text-white transition-all disabled:opacity-20 disabled:cursor-not-allowed"
+            aria-label="Next video"
+          >
+            <ChevronRight size={24} />
+          </button>
+        </div>
+
+        {/* Title + dot indicators */}
+        <div className="mt-3 flex items-center justify-between px-1">
+          <p className="text-white/75 text-sm font-medium truncate mr-4">{videos[current].title}</p>
+          <div className="flex items-center gap-1.5 flex-shrink-0">
+            {videos.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setCurrent(i)}
+                className={`h-1.5 rounded-full transition-all duration-300 ${i === current ? 'bg-red w-5' : 'bg-white/30 w-1.5 hover:bg-white/60'}`}
+                aria-label={`Go to video ${i + 1}`}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ── 16:9 GCC thumbnail card (matches StripCard dimensions) ───
+function GCCCard({ video, onClick }) {
+  return (
+    <div className="group cursor-pointer flex-shrink-0 snap-start" style={{ width: '200px' }} onClick={onClick}>
+      <div className="relative rounded-xl overflow-hidden" style={{ width: '200px', height: '113px', background: '#0d1b35' }}>
+        <img
+          src={gthumb(video.id)}
+          alt={video.title}
+          style={{ width: '200px', height: '113px', objectFit: 'cover' }}
+          className="group-hover:scale-105 transition-transform duration-500"
+          onError={e => { e.target.style.display = 'none' }}
+        />
+        <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors" />
+        <div className="absolute inset-0 flex items-center justify-center"><PlayBtn /></div>
+      </div>
+      <p className="text-white/70 text-xs font-medium mt-2 line-clamp-2 leading-snug group-hover:text-white transition-colors">{video.title}</p>
+    </div>
+  )
+}
+
+// ── Featured GCC strip — click opens modal ────────────────────
+function FeaturedGCCSection() {
+  const [modalIndex, setModalIndex] = useState(null)
+  return (
+    <div>
+      {modalIndex !== null && (
+        <GCCModal
+          videos={gccVideos}
+          startIndex={modalIndex}
+          onClose={() => setModalIndex(null)}
+        />
+      )}
+      <div className="flex items-center justify-between mb-3">
+        <p className="text-white/35 text-xs font-semibold uppercase tracking-wider">📹 Featured Videos</p>
+        <Link href="/courses" className="text-red text-xs font-semibold flex items-center gap-1 hover:gap-2 transition-all">
+          All videos <ArrowRight size={11} />
+        </Link>
+      </div>
+      <div className="flex gap-3 overflow-x-auto snap-x pb-2" style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
+        {gccVideos.map((v, i) => (
+          <GCCCard key={v.id} video={v} onClick={() => setModalIndex(i)} />
+        ))}
+        <Link href="/courses" className="flex-shrink-0 snap-start group" style={{ width: '120px' }}>
+          <div className="rounded-xl border-2 border-dashed border-white/15 hover:border-red/40 flex flex-col items-center justify-center gap-2 transition-all" style={{ width: '120px', height: '68px' }}>
+            <ArrowRight size={14} className="text-white/30 group-hover:text-red transition-colors" />
+            <span className="text-[10px] text-white/30 group-hover:text-red transition-colors">More</span>
+          </div>
+        </Link>
+      </div>
+    </div>
+  )
+}
+
+// ── VXPlayer popup for short reels ───────────────────────────
+function ShortVideosSection() {
+  const containerRef = useRef(null)
+  const playerRef = useRef(null)
+
+  useEffect(() => {
+    function initVXPlayer() {
+      if (!containerRef.current || playerRef.current) return
+      playerRef.current = window.VXPlayer(containerRef.current, {
+        hostname: REELS_HOST,
+        type: 'reels',
+        videoIds: reels.map(r => r.id),
+        mode: 'popup',
+      })
+    }
+
+    if (window.VXPlayer) {
+      initVXPlayer()
+    } else {
+      document.addEventListener('vxplayerready', initVXPlayer)
+      return () => document.removeEventListener('vxplayerready', initVXPlayer)
+    }
+  }, [])
+
+  const open = (id) => playerRef.current?.jumpTo(id)
+
+  return (
+    <div>
+      <Script
+        src="https://assets.kpoint.com/orca/media/embed/player-vx.js"
+        strategy="afterInteractive"
+      />
+      {/* hidden VXPlayer mount point */}
+      <div ref={containerRef} />
+      <div className="flex items-center justify-between mb-3">
+        <p className="text-white/35 text-xs font-semibold uppercase tracking-wider">🎬 Short Videos</p>
+        <a href="/courses" style={{textDecoration:'none'}} className="text-red text-xs font-semibold flex items-center gap-1 hover:gap-2 transition-all">
+          See more <ArrowRight size={11} />
+        </a>
+      </div>
+      <div className="flex gap-3 overflow-x-auto snap-x pb-2" style={{scrollbarWidth:'none', WebkitOverflowScrolling:'touch'}}>
+        {reels.map((reel, i) => (
+          <ReelCard key={i} reel={reel} onClick={() => open(reel.id)} />
+        ))}
+        <a href="/courses" style={{textDecoration:'none'}} className="flex-shrink-0 snap-start group cursor-pointer">
+          <div className="rounded-xl border-2 border-dashed border-white/15 hover:border-red/50 flex flex-col items-center justify-center gap-2 transition-all" style={{width:'108px', height:'192px'}}>
+            <ArrowRight size={18} className="text-white/30 group-hover:text-red transition-colors" />
+            <span className="text-[10px] text-white/30 group-hover:text-red text-center px-2 leading-tight transition-colors">See all</span>
+          </div>
+        </a>
+      </div>
     </div>
   )
 }
@@ -267,43 +489,14 @@ export default function HomePage() {
           <div className="pb-10">
             <div className="grid lg:grid-cols-2 gap-6 items-start">
 
-              {/* LEFT — Featured 16:9 videos */}
+              {/* LEFT — Featured GCC videos */}
               <div>
-                <div className="flex items-center justify-between mb-3">
-                  <p className="text-white/35 text-xs font-semibold uppercase tracking-wider">📹 Featured Videos</p>
-                  <Link href="/courses" className="text-red text-xs font-semibold flex items-center gap-1 hover:gap-2 transition-all">
-                    All videos <ArrowRight size={11} />
-                  </Link>
-                </div>
-                <div className="flex gap-3 overflow-x-auto snap-x pb-2" style={{scrollbarWidth:'none', WebkitOverflowScrolling:'touch'}}>
-                  {featuredVideos.slice(0,6).map(v => <StripCard key={v.id} video={v} />)}
-                  <Link href="/courses" className="flex-shrink-0 snap-start group" style={{width:'120px'}}>
-                    <div className="rounded-xl border-2 border-dashed border-white/15 hover:border-red/40 flex flex-col items-center justify-center gap-2 transition-all" style={{width:'120px', height:'68px'}}>
-                      <ArrowRight size={14} className="text-white/30 group-hover:text-red transition-colors" />
-                      <span className="text-[10px] text-white/30 group-hover:text-red transition-colors">More</span>
-                    </div>
-                  </Link>
-                </div>
+                <FeaturedGCCSection />
               </div>
 
               {/* RIGHT — Short 9:16 reels */}
               <div>
-                <div className="flex items-center justify-between mb-3">
-                  <p className="text-white/35 text-xs font-semibold uppercase tracking-wider">🎬 Short Videos</p>
-                  <a href="/courses" style={{textDecoration:'none'}} className="text-red text-xs font-semibold flex items-center gap-1 hover:gap-2 transition-all">
-                    See more <ArrowRight size={11} />
-                  </a>
-                </div>
-                <div className="flex gap-3 overflow-x-auto snap-x pb-2" style={{scrollbarWidth:'none', WebkitOverflowScrolling:'touch'}}>
-                  {reels.map((reel, i) => <ReelCard key={i} reel={reel} index={i} />)}
-                  {/* See all card — same 192px height as reel cards */}
-                  <a href="/courses" style={{textDecoration:'none'}} className="flex-shrink-0 snap-start group cursor-pointer">
-                    <div className="rounded-xl border-2 border-dashed border-white/15 hover:border-red/50 flex flex-col items-center justify-center gap-2 transition-all" style={{width:'108px', height:'192px'}}>
-                      <ArrowRight size={18} className="text-white/30 group-hover:text-red transition-colors" />
-                      <span className="text-[10px] text-white/30 group-hover:text-red text-center px-2 leading-tight transition-colors">See all</span>
-                    </div>
-                  </a>
-                </div>
+                <ShortVideosSection />
               </div>
 
             </div>
