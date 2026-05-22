@@ -3,12 +3,41 @@ import { useParams } from 'next/navigation'
 import { videoSeries, featuredVideos } from '@/lib/data'
 import Link from 'next/link'
 import { ArrowLeft, Play, Clock, ChevronRight } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+
+// GCC embed — re-mounts via key to reload player on each video
+function GCCPlayer({ videoId }) {
+  useEffect(() => {
+    const s = document.createElement('script')
+    s.src = 'https://ktpl.kpoint.com/assets/orca/media/embed/player-silk.js'
+    s.async = true
+    document.body.appendChild(s)
+    return () => { s.remove() }
+  }, [videoId])
+  return (
+    <div className="video-wrapper" style={{ width: '100%' }}>
+      <div
+        data-init-dynamic
+        data-video-host="ktpl.kpoint.com"
+        data-kvideo-id={videoId}
+        data-samesite="true"
+        data-video-params='{"autoplay":false}'
+        style={{ width: '100%' }}
+      />
+    </div>
+  )
+}
 
 function VideoPlayer({ video }) {
   if (!video) return (
     <div className="rounded-2xl border border-gray-200 bg-gray-50 aspect-video flex items-center justify-center">
       <div className="text-center"><Play size={40} className="text-gray-200 mx-auto mb-2" /><p className="text-gray-400 text-sm">Select a video</p></div>
+    </div>
+  )
+  // Prefer kpoint GCC embed when a gccId is present on the video
+  if (video.gccId) return (
+    <div className="rounded-2xl overflow-hidden border border-gray-200 bg-black shadow-sm">
+      <GCCPlayer key={video.gccId} videoId={video.gccId} />
     </div>
   )
   if (video.embedCode) return (

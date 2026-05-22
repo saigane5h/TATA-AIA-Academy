@@ -350,15 +350,17 @@ function ShortVideosSection() {
   )
 }
 
-// ── Grid video card (sections below hero) ────────────────────
+// ── Grid video card (sections below hero) — links to /video/[id] ───
 function GridCard({ video }) {
+  const thumb = video.gccId
+    ? gthumb(video.gccId)
+    : video.thumbnail
   return (
-    <div className="group cursor-pointer">
+    <Link href={`/video/${video.id}`} className="block group">
       <div className="relative rounded-xl overflow-hidden aspect-video mb-3 bg-gray-100">
-        <img src={video.thumbnail} alt={video.title}
+        <img src={thumb} alt={video.title}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-          onError={e => { e.target.style.display='none'; e.target.nextSibling.style.display='flex' }} />
-        <div className="hidden w-full h-full bg-navy items-center justify-center absolute inset-0" />
+          onError={e => { e.target.onerror = null; e.target.src = video.thumbnail || '' }} />
         <div className="absolute inset-0 bg-black/25 group-hover:bg-black/10 transition-colors" />
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="w-11 h-11 rounded-full bg-white/25 border-2 border-white/50 flex items-center justify-center group-hover:bg-red group-hover:border-red transition-all">
@@ -367,18 +369,24 @@ function GridCard({ video }) {
         </div>
         <span className="absolute bottom-2.5 right-2.5 bg-black/70 rounded px-2 py-0.5 text-xs text-white font-medium">{video.duration}</span>
         {video.tag && <span className={`absolute top-2.5 left-2.5 badge ${video.tagColor} text-[10px]`}>{video.tag}</span>}
-        <button className="absolute bottom-2.5 left-2.5 opacity-0 group-hover:opacity-100 transition-opacity bg-white/90 rounded px-1.5 py-0.5 text-[10px] font-semibold text-navy flex items-center gap-1">
+        <button
+          type="button"
+          onClick={(e) => { e.preventDefault(); e.stopPropagation() }}
+          className="absolute bottom-2.5 left-2.5 opacity-0 group-hover:opacity-100 transition-opacity bg-white/90 rounded px-1.5 py-0.5 text-[10px] font-semibold text-navy flex items-center gap-1"
+        >
           <Share2 size={9} /> Share
         </button>
       </div>
       <h3 className="font-semibold text-navy text-sm leading-snug group-hover:text-red transition-colors">{video.title}</h3>
-    </div>
+    </Link>
   )
 }
 
 function GuideTile({ g }) {
+  // Routes to the video-guide page when a seriesId is provided
+  const href = g.seriesId ? `/courses/${g.seriesId}` : '/courses'
   return (
-    <Link href="/courses" className="block group">
+    <Link href={href} className="block group">
       <div className="card overflow-hidden">
         <div className="relative h-28 overflow-hidden">
           <img src={g.thumb} alt={g.title}
@@ -397,14 +405,15 @@ function GuideTile({ g }) {
   )
 }
 
-function PolicyRow({ pv }) {
+function PolicyRow({ pv, onOpen }) {
+  const thumb = pv.gccId ? gthumb(pv.gccId) : pv.thumbnail
   return (
-    <Link href="/policies" className="block group">
+    <button onClick={() => onOpen(pv)} className="block group text-left w-full">
       <div className="card flex gap-4 p-4 items-start hover:border-red/25 transition-all">
         <div className="relative flex-shrink-0 w-24 sm:w-36 h-16 sm:h-20 rounded-xl overflow-hidden bg-gray-100">
-          <img src={pv.thumbnail} alt={pv.title}
+          <img src={thumb} alt={pv.title}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            onError={e => e.target.style.opacity='0.3'} />
+            onError={e => { e.target.onerror = null; e.target.src = pv.thumbnail || '' }} />
           <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
             <div className="w-8 h-8 rounded-full bg-red flex items-center justify-center">
               <Play size={13} className="text-white ml-0.5" />
@@ -421,7 +430,51 @@ function PolicyRow({ pv }) {
           <p className="text-xs text-gray-400 line-clamp-2 leading-relaxed">{pv.summary}</p>
         </div>
       </div>
-    </Link>
+    </button>
+  )
+}
+
+// Single-video popup matching the /policies page experience
+function PolicyVideoModal({ pv, onClose }) {
+  useEffect(() => {
+    document.body.style.overflow = 'hidden'
+    return () => { document.body.style.overflow = '' }
+  }, [])
+
+  useEffect(() => {
+    const onKey = (e) => { if (e.key === 'Escape') onClose() }
+    document.addEventListener('keydown', onKey)
+    return () => document.removeEventListener('keydown', onKey)
+  }, [onClose])
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+      onClick={onClose}
+    >
+      <div className="relative w-full max-w-3xl bg-white rounded-2xl overflow-hidden shadow-2xl" onClick={e => e.stopPropagation()}>
+        {/* Header */}
+        <div className="flex items-start justify-between p-4 border-b border-gray-100">
+          <div className="flex-1 pr-4">
+            <span className={`badge ${pv.tagColor} mb-1`}>{pv.tag}</span>
+            <h3 className="font-semibold text-navy text-base leading-snug">{pv.title}</h3>
+          </div>
+          <button onClick={onClose} className="text-gray-400 hover:text-navy transition-colors flex-shrink-0" aria-label="Close">
+            <X size={20} />
+          </button>
+        </div>
+
+        {/* Player */}
+        <div className="aspect-video bg-black">
+          <GCCVideoPlayer key={pv.gccId} videoId={pv.gccId || 'gcc-3048f3df-f2d0-419c-a8c1-c84a660f8897'} />
+        </div>
+
+        {/* Summary */}
+        <div className="p-4">
+          <p className="text-sm text-gray-600 leading-relaxed">{pv.summary}</p>
+        </div>
+      </div>
+    </div>
   )
 }
 
@@ -441,6 +494,7 @@ export default function HomePage() {
   const [essentialsTag, setEssentialsTag] = useState('All')
   const mythTags = ['All','Myth busted','FAQ']
   const [mythTag, setMythTag] = useState('All')
+  const [activePolicy, setActivePolicy] = useState(null)
 
   const essentialsVideos = featuredVideos.filter(v =>
     essentialsTag === 'All' ? !['Myth busted','FAQ'].includes(v.tag) : v.tag === essentialsTag
@@ -451,6 +505,11 @@ export default function HomePage() {
 
   return (
     <div className="bg-gray-50">
+
+      {/* Single-video popup for Stay current section */}
+      {activePolicy && (
+        <PolicyVideoModal pv={activePolicy} onClose={() => setActivePolicy(null)} />
+      )}
 
       {/* ── HERO ─────────────────────────────────────────────── */}
       <section className="hero-bg relative overflow-hidden">
@@ -604,14 +663,14 @@ export default function HomePage() {
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
             {[
-              {title:'Life insurance basics', sub:'What every Indian family needs to know', videos:5, thumb:'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=400&q=80', tag:'Start Here', tagColor:'bg-red text-white'},
-              {title:'How claims work', sub:'Process, documents, timelines', videos:4, thumb:'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&q=80', tag:'Claims', tagColor:'bg-green-600 text-white'},
-              {title:'Choosing the right plan', sub:'Term, ULIP, whole life, endowment', videos:4, thumb:'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&q=80', tag:'Planning', tagColor:'bg-purple-600 text-white'},
-              {title:'Critical illness cover', sub:'Cancer, heart attack, stroke and more', videos:3, thumb:'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=400&q=80', tag:'Important', tagColor:'bg-amber-500 text-white'},
-              {title:'Tax & life insurance', sub:'80C, 10(10D), GST exemption', videos:3, thumb:'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&q=80', tag:'Tax', tagColor:'bg-blue-600 text-white'},
-              {title:'Riders & add-ons', sub:"What's worth adding and what's not", videos:3, thumb:'https://images.unsplash.com/photo-1492725764893-90b379c2b6e7?w=400&q=80', tag:'Tips', tagColor:'bg-teal-600 text-white'},
-              {title:'Switching & portability', sub:'Move insurers without losing benefits', videos:3, thumb:'https://images.unsplash.com/photo-1568992688065-536aad8a12f6?w=400&q=80', tag:'Tips', tagColor:'bg-blue-500 text-white'},
-              {title:'Retirement planning', sub:'Annuities, whole life, legacy planning', videos:4, thumb:'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&q=80', tag:'Retirement', tagColor:'bg-navy text-white'},
+              {seriesId:'health-basics',     title:'Life insurance basics', sub:'What every Indian family needs to know', videos:5, thumb:'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=400&q=80', tag:'Start Here', tagColor:'bg-red text-white'},
+              {seriesId:'cashless-claims',   title:'How claims work', sub:'Process, documents, timelines', videos:4, thumb:'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&q=80', tag:'Claims', tagColor:'bg-green-600 text-white'},
+              {seriesId:'choosing-plan',     title:'Choosing the right plan', sub:'Term, ULIP, whole life, endowment', videos:4, thumb:'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=400&q=80', tag:'Planning', tagColor:'bg-purple-600 text-white'},
+              {seriesId:'critical-illness',  title:'Critical illness cover', sub:'Cancer, heart attack, stroke and more', videos:3, thumb:'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=400&q=80', tag:'Important', tagColor:'bg-amber-500 text-white'},
+              {seriesId:'tax-cover',         title:'Tax & life insurance', sub:'80C, 10(10D), GST exemption', videos:3, thumb:'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&q=80', tag:'Tax', tagColor:'bg-blue-600 text-white'},
+              {seriesId:'wellness-benefits', title:'Riders & add-ons', sub:"What's worth adding and what's not", videos:3, thumb:'https://images.unsplash.com/photo-1492725764893-90b379c2b6e7?w=400&q=80', tag:'Tips', tagColor:'bg-teal-600 text-white'},
+              {seriesId:'renewal-tips',      title:'Switching & portability', sub:'Move insurers without losing benefits', videos:3, thumb:'https://images.unsplash.com/photo-1568992688065-536aad8a12f6?w=400&q=80', tag:'Tips', tagColor:'bg-blue-500 text-white'},
+              {seriesId:'health-basics',     title:'Retirement planning', sub:'Annuities, whole life, legacy planning', videos:4, thumb:'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&q=80', tag:'Retirement', tagColor:'bg-navy text-white'},
             ].map((g,i) => <GuideTile key={i} g={g} />)}
           </div>
         </div>
@@ -663,7 +722,7 @@ export default function HomePage() {
               </div>
             </div>
             <div className="grid sm:grid-cols-2 gap-4">
-              {policyVideos.slice(0,2).map(pv => <PolicyRow key={pv.id} pv={pv} />)}
+              {policyVideos.slice(0,2).map(pv => <PolicyRow key={pv.id} pv={pv} onOpen={setActivePolicy} />)}
             </div>
           </div>
           <div>
@@ -675,7 +734,7 @@ export default function HomePage() {
               </div>
             </div>
             <div className="grid sm:grid-cols-2 gap-4">
-              {policyVideos.slice(2,4).map(pv => <PolicyRow key={pv.id} pv={pv} />)}
+              {policyVideos.slice(2,4).map(pv => <PolicyRow key={pv.id} pv={pv} onOpen={setActivePolicy} />)}
             </div>
           </div>
         </div>
